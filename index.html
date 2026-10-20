@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="GetHealthy" />
+  <title>GetHealthy — Private Command Center</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: #334155;
+      --green: #10b981;
+      --green-bg: rgba(16, 185, 129, 0.12);
+      --yellow: #f59e0b;
+      --yellow-bg: rgba(245, 158, 11, 0.12);
+      --accent: #38bdf8;
+      --accent-bg: rgba(56, 189, 248, 0.12);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 18px 14px 60px;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+    .hidden { display: none !important; }
+    .login-wrap {
+      max-width: 410px;
+      margin: 65px auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 26px;
+    }
+    .login-wrap h1 { font-size: 1.35rem; margin-bottom: 6px; }
+    .login-wrap p { color: var(--muted); font-size: 0.85rem; margin-bottom: 18px; }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 5px; font-weight: 600; }
+    input[type="text"], input[type="password"], input[type="number"], select, textarea {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-family: inherit;
+    }
+    .btn {
+      background: var(--accent);
+      color: #0f172a;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.88rem;
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.82rem;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    h1 { font-size: 1.4rem; font-weight: 700; }
+    .subtitle { color: var(--muted); font-size: 0.86rem; margin-top: 3px; }
+    .top-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .streak-badge {
+      background: var(--green-bg);
+      border: 1px solid var(--green);
+      color: var(--green);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.86rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+    .card h2 {
+      font-size: 1.03rem;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .pill {
+      font-size: 0.74rem;
+      padding: 3px 8px;
+      border-radius: 99px;
+      background: var(--accent-bg);
+      color: var(--accent);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .mode-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .mode-btn {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #0f172a;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 600;
+      text-align: left;
+    }
+    .mode-btn.active-green { background: var(--green-bg); border-color: var(--green); color: var(--text); }
+    .mode-btn.active-yellow { background: var(--yellow-bg); border-color: var(--yellow); color: var(--text); }
+    .mode-btn small { display: block; font-weight: 400; font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+    .prescription-box {
+      background: #0f172a;
+      border-left: 4px solid var(--accent);
+      padding: 11px 13px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      font-size: 0.87rem;
+    }
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.55);
+      margin-bottom: 8px;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .checklist-item.checked { background: var(--green-bg); border-color: rgba(16, 185, 129, 0.35); }
+    .checklist-item input[type="checkbox"] {
+      width: 19px;
+      height: 19px;
+      margin-top: 2px;
+      accent-color: var(--green);
+      flex-shrink: 0;
+    }
+    .item-title { font-weight: 600; font-size: 0.9rem; }
+    .item-desc { font-size: 0.79rem; color: var(--muted); }
+    .macro-bars {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .macro-box {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+    .macro-box .val { font-size: 1.15rem; font-weight: 700; color: var(--accent); }
+    .macro-box .lbl { font-size: 0.74rem; color: var(--muted); }
+    .weight-list {
+      margin-top: 10px;
+      max-height: 165px;
+      overflow-y: auto;
+      font-size: 0.83rem;
+    }
+    .weight-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 8px;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+    }
+    .grocery-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 7px;
+      margin-top: 10px;
+    }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+    }
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      width: 100%;
+      max-width: 720px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. USERNAME & PASSWORD LOGIN SCREEN (AES-256-GCM Encrypted Vault) -->
+  <div id="loginScreen" class="login-wrap">
+    <h1>🔒 Sign In</h1>
+    <p>Enter your username and password to decrypt your connection and load your live <code>config.json</code> &amp; <code>data.json</code>.</p>
+
+    <form onsubmit="event.preventDefault(); loginWithPassword();">
+      <div class="field">
+        <label>Username</label>
+        <input type="text" id="loginUser" autocomplete="username" placeholder="gabzsi" required />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="loginPass" autocomplete="current-password" placeholder="••••••••" required />
+      </div>
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button type="submit" class="btn" style="flex:1">Sign In</button>
+        <button type="button" class="btn-secondary" onclick="loadLocalFiles()">Local PC Mode</button>
+      </div>
+    </form>
+
+    <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--border); font-size:0.79rem; color:var(--muted);">
+      <a href="#" style="color:var(--accent); text-decoration:none;" onclick="toggleVaultSetup(event)">First-time setup: Create your Username &amp; Password</a>
+      <div id="vaultSetupBox" class="hidden" style="margin-top:12px;">
+        <div class="field">
+          <label>Private Repo (owner/repo)</label>
+          <input type="text" id="setupRepo" value="gabzsi/gethealthy-private" />
+        </div>
+        <div class="field">
+          <label>One-Time GitHub Fine-Grained Token (gets AES-256 encrypted by your password)</label>
+          <input type="password" id="setupToken" placeholder="github_pat_..." />
+        </div>
+        <button type="button" class="btn-secondary" style="width:100%" onclick="createEncryptedVault()">Encrypt &amp; Save Username/Password</button>
+      </div>
+    </div>
+
+    <div id="loginStatus" style="margin-top:12px; font-size:0.82rem; color:var(--yellow);"></div>
+  </div>
+
+  <!-- 2. DYNAMIC APP SHELL (Populated 100% from config.json + data.json) -->
+  <div id="appShell" class="hidden">
+    <header>
+      <div>
+        <h1 id="appTitle">GetHealthy</h1>
+        <div class="subtitle" id="dateSubtitle"></div>
+      </div>
+      <div class="top-actions">
+        <span class="streak-badge">🔥 Streak: <span id="streakCount">0</span>d</span>
+        <button class="btn-secondary" onclick="openConfigModal()">⚙️ Edit Plan (config.json)</button>
+        <button class="btn-secondary" onclick="promptChangePassword()">🔑 Change Password</button>
+        <button class="btn-secondary" onclick="logout()">🔒 Sign Out</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <h2>
+          <span>1. Morning Movement</span>
+          <span class="pill" id="focusPill"></span>
+        </h2>
+        <div class="mode-switch">
+          <button class="mode-btn" id="btnGreen" onclick="setMode('green')">
+            🟢 Green Day (25–30m)
+            <small>Full morning session</small>
+          </button>
+          <button class="mode-btn" id="btnYellow" onclick="setMode('yellow')">
+            🟡 Yellow Day (10m Floor)
+            <small>Rough newborn night</small>
+          </button>
+        </div>
+        <div class="prescription-box" id="prescriptionBox"></div>
+        <div id="habitsContainer"></div>
+      </div>
+
+      <div class="card">
+        <h2>
+          <span>2. Cronometer Nutrition &amp; Targets</span>
+          <span class="pill" id="cronoDatePill">No sync yet</span>
+        </h2>
+
+        <div class="macro-bars">
+          <div class="macro-box">
+            <div class="val" id="kcalVal">—</div>
+            <div class="lbl" id="kcalTargetLbl">Target: 2,000–2,200 kcal</div>
+          </div>
+          <div class="macro-box">
+            <div class="val" id="protVal">—</div>
+            <div class="lbl" id="protTargetLbl">Target: 140g Protein</div>
+          </div>
+          <div class="macro-box">
+            <div class="val" id="fibVal">—</div>
+            <div class="lbl" id="fibTargetLbl">Target: 30g Fiber</div>
+          </div>
+        </div>
+
+        <div style="background:#0f172a; border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom:12px;">
+          <div style="font-size:0.84rem; font-weight:600; margin-bottom:6px;">📥 Cronometer Auto-Sync / CSV Upload</div>
+          <div style="font-size:0.78rem; color:var(--muted); margin-bottom:10px;">
+            Run <code>python sync_cronometer.py</code> (or let the 5 AM cloud job pull your Cronometer account automatically), or drop a CSV right here:
+          </div>
+          <input type="file" id="csvFileInput" accept=".csv" onchange="importCronometerCsv(event)" style="font-size:0.8rem;" />
+        </div>
+
+        <div style="font-size:0.84rem; font-weight:600; margin-bottom:6px;">Quick Manual Macro Entry (Today)</div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr auto; gap:8px;">
+          <input type="number" id="manualKcal" placeholder="kcal" />
+          <input type="number" id="manualProt" placeholder="Prot (g)" />
+          <input type="number" id="manualFib" placeholder="Fiber (g)" />
+          <button class="btn" onclick="saveManualMacros()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>
+          <span>3. 3-Day Sandwich &amp; Meal Rotation</span>
+          <span class="pill">Dynamic from config.json</span>
+        </h2>
+        <select id="mealSelect" onchange="selectMeal()" style="margin-bottom:10px;"></select>
+        <div style="font-size:0.81rem; color:var(--accent); font-weight:600; margin-bottom:8px;" id="mealPrepNote"></div>
+        <div class="grocery-list" id="groceryContainer"></div>
+      </div>
+
+      <div class="card">
+        <h2>
+          <span>4. Scale Weight &amp; 7-Day Average</span>
+          <span class="pill" id="avgWeightPill"></span>
+        </h2>
+        <div style="display:flex; gap:8px; margin-bottom:10px;">
+          <input type="number" step="0.1" id="weightInput" placeholder="Morning weight (lbs)" />
+          <button class="btn" onclick="logWeight()">Log</button>
+        </div>
+        <div class="weight-list" id="weightList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. IN-APP CONFIG.JSON EDITOR MODAL -->
+  <div id="configModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h2 style="font-size:1.1rem;">⚙️ Edit Your Plan &amp; Meals (<code>config.json</code>)</h2>
+        <button class="btn-secondary" onclick="closeConfigModal()">✕ Close</button>
+      </div>
+      <textarea id="configEditorText" rows="18" style="font-family:monospace; font-size:0.82rem; margin-bottom:12px;"></textarea>
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button class="btn" onclick="saveConfigFromModal()">💾 Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Optional pre-encrypted vault string (AES-256-GCM encrypted with your Username+Password)
+    const PRECONFIGURED_VAULT = {"salt": "Ql5CTqCFgRM047863eHVLw==", "iv": "M6jKXjGzb3Jncdqd", "data": "dJ57GWZPqOplrNKoxKBy+fq+Aj0wyYoW18du4ecH8wbMvNYqRbjTsejp9X5K+rF+k/U5fsjDtJ5J0IyoayAs6CSfd5W4DDq3mq1JU5inUAiz6vy0IRNUDXLBuHlopBlV1LoQIXbLHQRk7Q=="};
+
+    let CONFIG = null;
+    let DATA = null;
+    let GH_AUTH = null;
+
+    const todayKey = new Date().toISOString().slice(0, 10);
+    const dayName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][new Date().getDay()];
+
+    function toggleVaultSetup(e) {
+      e.preventDefault();
+      document.getElementById("vaultSetupBox").classList.toggle("hidden");
+    }
+
+    async function deriveKey(username, password, saltBytes) {
+      const enc = new TextEncoder();
+      const keyMaterial = await crypto.subtle.importKey(
+        "raw",
+        enc.encode(`${username.trim().toLowerCase()}:${password}`),
+        { name: "PBKDF2" },
+        false,
+        ["deriveKey"]
+      );
+      return crypto.subtle.deriveKey(
+        { name: "PBKDF2", salt: saltBytes, iterations: 100000, hash: "SHA-256" },
+        keyMaterial,
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["encrypt", "decrypt"]
+      );
+    }
+
+    function bufToB64(buf) {
+      return btoa(String.fromCharCode(...new Uint8Array(buf)));
+    }
+
+    function b64ToBuf(b64) {
+      return Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    }
+
+    async function createEncryptedVault() {
+      const user = document.getElementById("loginUser").value.trim();
+      const pass = document.getElementById("loginPass").value;
+      const repo = document.getElementById("setupRepo").value.trim();
+      const token = document.getElementById("setupToken").value.trim();
+      const status = document.getElementById("loginStatus");
+
+      if (!user || !pass || !repo || !token) {
+        status.textContent = "Fill in Username, Password, Repo, and Token above first.";
+        return;
+      }
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const key = await deriveKey(user, pass, salt);
+      const plain = new TextEncoder().encode(JSON.stringify({ repo, token }));
+      const cipher = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, plain);
+      const vaultObj = { salt: bufToB64(salt), iv: bufToB64(iv), data: bufToB64(cipher) };
+      localStorage.setItem("gethealthy_encrypted_vault", JSON.stringify(vaultObj));
+      status.textContent = "✅ Username & Password encrypted! Clicking Sign In now...";
+      await loginWithPassword();
+    }
+
+    async function loginWithPassword() {
+      const user = document.getElementById("loginUser").value.trim();
+      const pass = document.getElementById("loginPass").value;
+      const status = document.getElementById("loginStatus");
+      const rawVault = localStorage.getItem("gethealthy_encrypted_vault") || (PRECONFIGURED_VAULT ? JSON.stringify(PRECONFIGURED_VAULT) : null);
+
+      if (!rawVault) {
+        status.textContent = "No encrypted vault found yet—click 'First-time setup' below or 'Local PC Mode'.";
+        return;
+      }
+      try {
+        status.textContent = "Decrypting vault & signing in...";
+        const v = JSON.parse(rawVault);
+        const key = await deriveKey(user, pass, b64ToBuf(v.salt));
+        const decBuf = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64ToBuf(v.iv) }, key, b64ToBuf(v.data));
+        const { repo, token } = JSON.parse(new TextDecoder().decode(decBuf));
+
+        const cfgRes = await ghFetchFile(repo, token, "config.json");
+        const datRes = await ghFetchFile(repo, token, "data.json");
+        CONFIG = cfgRes.data;
+        DATA = datRes.data;
+        GH_AUTH = { repo, token, configSha: cfgRes.sha, dataSha: datRes.sha };
+        sessionStorage.setItem("gethealthy_session", JSON.stringify({ repo, token }));
+        document.getElementById("loginScreen").classList.add("hidden");
+        document.getElementById("appShell").classList.remove("hidden");
+        render();
+      } catch (e) {
+        status.textContent = "❌ Invalid username or password (or repo unreachable).";
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", async () => {
+      const sess = sessionStorage.getItem("gethealthy_session");
+      if (sess) {
+        try {
+          const { repo, token } = JSON.parse(sess);
+          const cfgRes = await ghFetchFile(repo, token, "config.json");
+          const datRes = await ghFetchFile(repo, token, "data.json");
+          CONFIG = cfgRes.data;
+          DATA = datRes.data;
+          GH_AUTH = { repo, token, configSha: cfgRes.sha, dataSha: datRes.sha };
+          document.getElementById("loginScreen").classList.add("hidden");
+          document.getElementById("appShell").classList.remove("hidden");
+          render();
+        } catch (e) {}
+      }
+    });
+
+    async function ghFetchFile(repo, token, path) {
+      const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Accept": "application/vnd.github+json"
+        }
+      });
+      if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+      const json = await res.json();
+      const content = new TextDecoder().decode(Uint8Array.from(atob(json.content.replace(/\n/g, "")), c => c.charCodeAt(0)));
+      return { data: JSON.parse(content), sha: json.sha };
+    }
+
+    async function ghSaveFile(repo, token, path, obj, sha, message) {
+      const bytes = new TextEncoder().encode(JSON.stringify(obj, null, 2));
+      let bin = "";
+      bytes.forEach(b => bin += String.fromCharCode(b));
+      const content = btoa(bin);
+
+      const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Accept": "application/vnd.github+json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message, content, sha })
+      });
+      if (!res.ok) throw new Error(`Failed saving ${path}: ${res.status}`);
+      const out = await res.json();
+      return out.content.sha;
+    }
+
+    async function loadLocalFiles() {
+      const status = document.getElementById("loginStatus");
+      try {
+        const [cfgRes, datRes] = await Promise.all([fetch("./config.json"), fetch("./data.json")]);
+        CONFIG = await cfgRes.json();
+        const savedLocalData = localStorage.getItem("gethealthy_local_data");
+        DATA = savedLocalData ? JSON.parse(savedLocalData) : await datRes.json();
+        const savedLocalCfg = localStorage.getItem("gethealthy_local_config");
+        if (savedLocalCfg) CONFIG = JSON.parse(savedLocalCfg);
+
+        document.getElementById("loginScreen").classList.add("hidden");
+        document.getElementById("appShell").classList.remove("hidden");
+        render();
+      } catch (e) {
+        status.textContent = "Note: Browsers block fetch('./config.json') over file://. Sign in above once hosted.";
+      }
+    }
+
+    async function persistData(msg = "Update health log") {
+      localStorage.setItem("gethealthy_local_data", JSON.stringify(DATA));
+      if (GH_AUTH) {
+        try {
+          GH_AUTH.dataSha = await ghSaveFile(GH_AUTH.repo, GH_AUTH.token, "data.json", DATA, GH_AUTH.dataSha, msg);
+        } catch (e) { console.error(e); }
+      }
+    }
+
+    async function persistConfig(msg = "Update plan config") {
+      localStorage.setItem("gethealthy_local_config", JSON.stringify(CONFIG));
+      if (GH_AUTH) {
+        try {
+          GH_AUTH.configSha = await ghSaveFile(GH_AUTH.repo, GH_AUTH.token, "config.json", CONFIG, GH_AUTH.configSha, msg);
+        } catch (e) { console.error(e); }
+      }
+    }
+
+    function logout() {
+      sessionStorage.removeItem("gethealthy_session");
+      GH_AUTH = null;
+      document.getElementById("appShell").classList.add("hidden");
+      document.getElementById("loginScreen").classList.remove("hidden");
+    }
+
+    async function promptChangePassword() {
+      if (!GH_AUTH) return;
+      const newUser = prompt("Enter your desired Username:", "gabzsi");
+      if (!newUser) return;
+      const newPass = prompt("Enter your new Password:");
+      if (!newPass) return;
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const key = await deriveKey(newUser, newPass, salt);
+      const plain = new TextEncoder().encode(JSON.stringify({ repo: GH_AUTH.repo, token: GH_AUTH.token }));
+      const cipher = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, plain);
+      const vaultObj = { salt: bufToB64(salt), iv: bufToB64(iv), data: bufToB64(cipher) };
+      localStorage.setItem("gethealthy_encrypted_vault", JSON.stringify(vaultObj));
+      alert("Password updated on this device!");
+    }
+
+    function render() {
+      if (!CONFIG || !DATA) return;
+      if (!DATA.days[todayKey]) DATA.days[todayKey] = { mode: "green", checks: {} };
+      const today = DATA.days[todayKey];
+      const prof = CONFIG.profile || {};
+
+      document.getElementById("appTitle").textContent = prof.title || "GetHealthy";
+      document.getElementById("dateSubtitle").textContent =
+        `${dayName}, ${todayKey} • Wake: ${prof.wakeTime || "05:00"} • Goal: ${prof.weightGoalLbs || 180} lbs`;
+
+      const sched = (CONFIG.weeklySchedule && CONFIG.weeklySchedule[dayName]) || { focus: "Daily Movement", green: "", yellow: "" };
+      document.getElementById("focusPill").textContent = sched.focus;
+      document.getElementById("btnGreen").className = "mode-btn " + (today.mode === "green" ? "active-green" : "");
+      document.getElementById("btnYellow").className = "mode-btn " + (today.mode === "yellow" ? "active-yellow" : "");
+      document.getElementById("prescriptionBox").innerHTML =
+        `<strong>${today.mode === "green" ? "🟢 Green Day:" : "🟡 Yellow Survival Floor:"}</strong> ${today.mode === "green" ? sched.green : sched.yellow}`;
+
+      const hContainer = document.getElementById("habitsContainer");
+      hContainer.innerHTML = "";
+      (CONFIG.dailyHabits || []).forEach(h => {
+        const checked = !!today.checks[h.id];
+        const lbl = document.createElement("label");
+        lbl.className = "checklist-item" + (checked ? " checked" : "");
+        lbl.innerHTML = `<input type="checkbox" ${checked ? "checked" : ""} onchange="toggleHabit('${h.id}')" />
+          <div>
+            <div class="item-title">${h.title}</div>
+            <div class="item-desc">${h.desc}</div>
+          </div>`;
+        hContainer.appendChild(lbl);
+      });
+
+      let streak = 0;
+      Object.keys(DATA.days || {}).sort().reverse().forEach(d => {
+        const c = DATA.days[d].checks || {};
+        if (Object.values(c).some(Boolean)) streak++;
+      });
+      document.getElementById("streakCount").textContent = streak;
+
+      const summaries = (DATA.cronometer && DATA.cronometer.dailySummaries) || [];
+      const latestMacro = summaries.find(s => s.date === todayKey) || summaries[summaries.length - 1];
+      document.getElementById("kcalTargetLbl").textContent = `Target: ${prof.calorieTarget?.min || 2000}–${prof.calorieTarget?.max || 2200} kcal`;
+      document.getElementById("protTargetLbl").textContent = `Target: ${prof.proteinTargetGrams || 140}g Protein`;
+      document.getElementById("fibTargetLbl").textContent = `Target: ${prof.fiberTargetGrams || 30}g Fiber`;
+
+      if (latestMacro) {
+        document.getElementById("cronoDatePill").textContent = `Logged: ${latestMacro.date}`;
+        document.getElementById("kcalVal").textContent = `${Math.round(latestMacro.kcal)} kcal`;
+        document.getElementById("protVal").textContent = `${Math.round(latestMacro.protein)} g`;
+        document.getElementById("fibVal").textContent = `${Math.round(latestMacro.fiber)} g`;
+      } else {
+        document.getElementById("cronoDatePill").textContent = "Awaiting Cronometer sync";
+        document.getElementById("kcalVal").textContent = "—";
+        document.getElementById("protVal").textContent = "—";
+        document.getElementById("fibVal").textContent = "—";
+      }
+
+      const mealSelect = document.getElementById("mealSelect");
+      mealSelect.innerHTML = "";
+      (CONFIG.meals || []).forEach(m => {
+        const opt = document.createElement("option");
+        opt.value = m.id;
+        opt.textContent = `[${m.category}] ${m.name} (~${m.kcal} kcal, ${m.protein}g P)`;
+        mealSelect.appendChild(opt);
+      });
+      const activeMealId = DATA.selectedMealId || (CONFIG.meals?.[0]?.id);
+      mealSelect.value = activeMealId;
+      const activeMeal = (CONFIG.meals || []).find(m => m.id === activeMealId) || CONFIG.meals?.[0];
+
+      const gContainer = document.getElementById("groceryContainer");
+      gContainer.innerHTML = "";
+      if (activeMeal) {
+        document.getElementById("mealPrepNote").textContent = activeMeal.prepNote || "";
+        (activeMeal.groceries || []).forEach((item, idx) => {
+          const gKey = `${activeMeal.id}_${idx}`;
+          const checked = !!(DATA.groceryChecked && DATA.groceryChecked[gKey]);
+          const lbl = document.createElement("label");
+          lbl.className = "checklist-item" + (checked ? " checked" : "");
+          lbl.style.marginBottom = "0";
+          lbl.innerHTML = `<input type="checkbox" ${checked ? "checked" : ""} onchange="toggleGrocery('${gKey}')" />
+            <div style="font-size:0.81rem;">${item}</div>`;
+          gContainer.appendChild(lbl);
+        });
+      }
+
+      const wList = document.getElementById("weightList");
+      wList.innerHTML = "";
+      const weights = (DATA.weights || []).slice().reverse();
+      if (weights.length > 0) {
+        const recent = weights.slice(0, 7);
+        const avg = (recent.reduce((s, x) => s + Number(x.weight), 0) / recent.length).toFixed(1);
+        document.getElementById("avgWeightPill").textContent = `7-Day Avg: ${avg} lbs`;
+      }
+      weights.forEach(w => {
+        const div = document.createElement("div");
+        div.className = "weight-row";
+        div.innerHTML = `<span style="color:var(--muted)">${w.date} ${w.source === 'cronometer' ? '(Crono)' : ''}</span><strong>${Number(w.weight).toFixed(1)} lbs</strong>`;
+        wList.appendChild(div);
+      });
+    }
+
+    function setMode(m) { DATA.days[todayKey].mode = m; persistData("Switch daily mode"); render(); }
+    function toggleHabit(id) { DATA.days[todayKey].checks[id] = !DATA.days[todayKey].checks[id]; persistData(`Toggle ${id}`); render(); }
+    function selectMeal() { DATA.selectedMealId = document.getElementById("mealSelect").value; persistData("Select active meal"); render(); }
+    function toggleGrocery(key) { DATA.groceryChecked = DATA.groceryChecked || {}; DATA.groceryChecked[key] = !DATA.groceryChecked[key]; persistData("Toggle grocery item"); render(); }
+
+    function logWeight() {
+      const val = parseFloat(document.getElementById("weightInput").value);
+      if (!val || val < 100 || val > 350) return;
+      DATA.weights = (DATA.weights || []).filter(w => w.date !== todayKey);
+      DATA.weights.push({ date: todayKey, weight: val, source: "manual" });
+      DATA.weights.sort((a, b) => a.date.localeCompare(b.date));
+      document.getElementById("weightInput").value = "";
+      persistData("Log morning weight");
+      render();
+    }
+
+    function saveManualMacros() {
+      const kcal = parseFloat(document.getElementById("manualKcal").value) || 0;
+      const protein = parseFloat(document.getElementById("manualProt").value) || 0;
+      const fiber = parseFloat(document.getElementById("manualFib").value) || 0;
+      if (!kcal && !protein) return;
+      DATA.cronometer = DATA.cronometer || { dailySummaries: [] };
+      DATA.cronometer.dailySummaries = DATA.cronometer.dailySummaries.filter(s => s.date !== todayKey);
+      DATA.cronometer.dailySummaries.push({ date: todayKey, kcal, protein, carbs: 0, fat: 0, fiber });
+      DATA.cronometer.dailySummaries.sort((a, b) => a.date.localeCompare(b.date));
+      persistData("Log manual macros");
+      render();
+    }
+
+    function importCronometerCsv(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const text = e.target.result;
+        const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+        if (lines.length < 2) return;
+        const headers = lines[0].split(",").map(h => h.replace(/^"|"$/g, "").trim());
+
+        const isBiometrics = headers.includes("Metric") && (headers.includes("Amount") || headers.includes("Value"));
+        if (isBiometrics) {
+          const byDate = {};
+          (DATA.weights || []).forEach(w => byDate[w.date] = w);
+          for (let i = 1; i < lines.length; i++) {
+            const cols = lines[i].split(",").map(c => c.replace(/^"|"$/g, "").trim());
+            const row = {};
+            headers.forEach((h, idx) => row[h] = cols[idx]);
+            if ((row["Metric"] || "").toLowerCase().includes("weight")) {
+              const dt = (row["Day"] || row["Date"] || "").slice(0, 10);
+              let val = parseFloat(row["Amount"] || row["Value"] || "0");
+              if ((row["Unit"] || "").toLowerCase().includes("kg")) val = +(val * 2.20462).toFixed(1);
+              if (dt && val > 0) byDate[dt] = { date: dt, weight: val, source: "cronometer" };
+            }
+          }
+          DATA.weights = Object.values(byDate).sort((a, b) => a.date.localeCompare(b.date));
+        } else {
+          const byDate = {};
+          (DATA.cronometer?.dailySummaries || []).forEach(s => byDate[s.date] = s);
+          for (let i = 1; i < lines.length; i++) {
+            const cols = lines[i].split(",").map(c => c.replace(/^"|"$/g, "").trim());
+            const row = {};
+            headers.forEach((h, idx) => row[h] = cols[idx]);
+            const dt = (row["Date"] || row["Day"] || "").slice(0, 10);
+            const kcal = parseFloat(row["Energy (kcal)"] || row["Calories"] || "0") || 0;
+            const protein = parseFloat(row["Protein (g)"] || row["Protein"] || "0") || 0;
+            const fiber = parseFloat(row["Fiber (g)"] || row["Fiber"] || "0") || 0;
+            const carbs = parseFloat(row["Carbs (g)"] || "0") || 0;
+            const fat = parseFloat(row["Fat (g)"] || "0") || 0;
+            if (dt && (kcal > 0 || protein > 0)) byDate[dt] = { date: dt, kcal, protein, carbs, fat, fiber };
+          }
+          DATA.cronometer = DATA.cronometer || {};
+          DATA.cronometer.dailySummaries = Object.values(byDate).sort((a, b) => a.date.localeCompare(b.date)).slice(-60);
+          DATA.cronometer.lastSync = new Date().toISOString();
+        }
+        persistData("Import Cronometer CSV");
+        render();
+      };
+      reader.readAsText(file);
+    }
+
+    function openConfigModal() {
+      document.getElementById("configEditorText").value = JSON.stringify(CONFIG, null, 2);
+      document.getElementById("configModal").classList.remove("hidden");
+    }
+    function closeConfigModal() { document.getElementById("configModal").classList.add("hidden"); }
+    function saveConfigFromModal() {
+      try {
+        CONFIG = JSON.parse(document.getElementById("configEditorText").value);
+        persistConfig("Update config.json from UI");
+        closeConfigModal();
+        render();
+      } catch (e) { alert("Invalid JSON: " + e.message); }
+    }
+  </script>
+</body>
+</html>
