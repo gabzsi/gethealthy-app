@@ -2,400 +2,878 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="GetHealthy" />
-  <title>GetHealthy — Private Command Center</title>
+  <meta name="apple-mobile-web-app-title" content="PULSE" />
+  <title>PULSE // 5:00 AM &amp; Nutrition Telemetry</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0f172a;
-      --card: #1e293b;
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --border: #334155;
-      --green: #10b981;
-      --green-bg: rgba(16, 185, 129, 0.12);
-      --yellow: #f59e0b;
-      --yellow-bg: rgba(245, 158, 11, 0.12);
-      --accent: #38bdf8;
-      --accent-bg: rgba(56, 189, 248, 0.12);
+      --bg-canvas: #08090c;
+      --bg-surface: #11131a;
+      --bg-elevated: #181b24;
+      --bg-glass: rgba(17, 19, 26, 0.88);
+      --border-hairline: rgba(255, 255, 255, 0.07);
+      --border-strong: rgba(255, 255, 255, 0.14);
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --text-muted: #64748b;
+      --signal-lime: #b6ff33;
+      --signal-emerald: #10e58b;
+      --signal-amber: #f5a623;
+      --signal-coral: #ff5a36;
+      --signal-sky: #38bdf8;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
-      padding: 18px 14px 60px;
-      max-width: 1080px;
-      margin: 0 auto;
+      font-family: var(--font-sans);
+      background-color: var(--bg-canvas);
+      color: var(--text-primary);
+      line-height: 1.45;
+      min-height: 100vh;
+      padding-bottom: 92px;
+      -webkit-font-smoothing: antialiased;
     }
+    .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
     .hidden { display: none !important; }
-    .login-wrap {
-      max-width: 410px;
-      margin: 65px auto;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 26px;
-    }
-    .login-wrap h1 { font-size: 1.35rem; margin-bottom: 6px; }
-    .login-wrap p { color: var(--muted); font-size: 0.85rem; margin-bottom: 18px; }
-    .field { margin-bottom: 14px; }
-    .field label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 5px; font-weight: 600; }
-    input[type="text"], input[type="password"], input[type="number"], select, textarea {
-      width: 100%;
-      background: #0f172a;
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 10px 12px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-family: inherit;
-    }
-    .btn {
-      background: var(--accent);
-      color: #0f172a;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 0.88rem;
-    }
-    .btn-secondary {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 0.82rem;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 18px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid var(--border);
-    }
-    h1 { font-size: 1.4rem; font-weight: 700; }
-    .subtitle { color: var(--muted); font-size: 0.86rem; margin-top: 3px; }
-    .top-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .streak-badge {
-      background: var(--green-bg);
-      border: 1px solid var(--green);
-      color: var(--green);
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-weight: 700;
-      font-size: 0.86rem;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 18px;
-    }
-    .card h2 {
-      font-size: 1.03rem;
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-    .pill {
-      font-size: 0.74rem;
-      padding: 3px 8px;
-      border-radius: 99px;
-      background: var(--accent-bg);
-      color: var(--accent);
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    .mode-switch {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-    .mode-btn {
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: #0f172a;
-      color: var(--muted);
-      cursor: pointer;
-      font-weight: 600;
-      text-align: left;
-    }
-    .mode-btn.active-green { background: var(--green-bg); border-color: var(--green); color: var(--text); }
-    .mode-btn.active-yellow { background: var(--yellow-bg); border-color: var(--yellow); color: var(--text); }
-    .mode-btn small { display: block; font-weight: 400; font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
-    .prescription-box {
-      background: #0f172a;
-      border-left: 4px solid var(--accent);
-      padding: 11px 13px;
-      border-radius: 8px;
-      margin-bottom: 14px;
-      font-size: 0.87rem;
-    }
-    .checklist-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 11px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: rgba(15, 23, 42, 0.55);
-      margin-bottom: 8px;
-      cursor: pointer;
-      border: 1px solid transparent;
-    }
-    .checklist-item.checked { background: var(--green-bg); border-color: rgba(16, 185, 129, 0.35); }
-    .checklist-item input[type="checkbox"] {
-      width: 19px;
-      height: 19px;
-      margin-top: 2px;
-      accent-color: var(--green);
-      flex-shrink: 0;
-    }
-    .item-title { font-weight: 600; font-size: 0.9rem; }
-    .item-desc { font-size: 0.79rem; color: var(--muted); }
-    .macro-bars {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-    .macro-box {
-      background: #0f172a;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px;
-      text-align: center;
-    }
-    .macro-box .val { font-size: 1.15rem; font-weight: 700; color: var(--accent); }
-    .macro-box .lbl { font-size: 0.74rem; color: var(--muted); }
-    .weight-list {
-      margin-top: 10px;
-      max-height: 165px;
-      overflow-y: auto;
-      font-size: 0.83rem;
-    }
-    .weight-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 6px 8px;
-      border-bottom: 1px solid rgba(51, 65, 85, 0.5);
-    }
-    .grocery-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 7px;
-      margin-top: 10px;
-    }
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
+
+    /* LOGIN VIEW */
+    .auth-shell {
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 16px;
-      z-index: 100;
-    }
-    .modal {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
       padding: 20px;
+      background: radial-gradient(circle at 50% 0%, rgba(182, 255, 51, 0.06) 0%, transparent 55%);
+    }
+    .auth-card {
       width: 100%;
-      max-width: 720px;
-      max-height: 90vh;
-      overflow-y: auto;
+      max-width: 390px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+    }
+    .brand-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--signal-lime);
+      margin-bottom: 12px;
+    }
+    .brand-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--signal-lime);
+      box-shadow: 0 0 10px var(--signal-lime);
+    }
+
+    /* INPUTS & BUTTONS */
+    .field { margin-bottom: 14px; }
+    .field label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    input[type="text"], input[type="password"], input[type="number"], input[type="date"], select, textarea {
+      width: 100%;
+      background: var(--bg-canvas);
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+      padding: 11px 12px;
+      border-radius: var(--radius-md);
+      font-size: 0.92rem;
+      font-family: inherit;
+      transition: border-color 0.15s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--signal-lime);
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--signal-lime);
+      color: #08090c;
+      border: none;
+      padding: 11px 16px;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.15s;
+    }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border-hairline);
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .btn-ghost:hover { border-color: var(--border-strong); }
+
+    /* APP SHELL & TOP HEADER */
+    .app-container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 16px 16px 32px;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+    .date-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-secondary);
+    }
+    .top-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-top: 2px;
+    }
+    .streak-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(182, 255, 51, 0.1);
+      border: 1px solid rgba(182, 255, 51, 0.3);
+      color: var(--signal-lime);
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    /* MODULE PANELS */
+    .panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .panel-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-secondary);
+    }
+    .panel-title {
+      font-size: 1.02rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    /* TELEMETRY RINGS & MACRO BAR */
+    .telemetry-hero {
+      display: grid;
+      grid-template-columns: 128px 1fr;
+      gap: 18px;
+      align-items: center;
+      padding: 14px;
+      background: var(--bg-canvas);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      margin-bottom: 14px;
+    }
+    .ring-wrap {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ring-center {
+      position: absolute;
+      text-align: center;
+    }
+    .ring-center .kcal-num {
+      font-family: var(--font-mono);
+      font-size: 1.28rem;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+    .ring-center .kcal-lbl {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+    }
+    .macro-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .macro-row-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      margin-bottom: 4px;
+    }
+    .macro-bar-track {
+      height: 6px;
+      background: var(--bg-elevated);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .macro-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.35s ease;
+    }
+
+    /* CRONOMETER FOOD DIARY LIST */
+    .diary-group-title {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      margin: 12px 0 6px;
+    }
+    .diary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 11px;
+      background: var(--bg-canvas);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      margin-bottom: 6px;
+      font-size: 0.84rem;
+    }
+    .diary-item-name { font-weight: 500; color: var(--text-primary); }
+    .diary-item-sub { font-size: 0.74rem; color: var(--text-secondary); }
+    .diary-item-macros {
+      text-align: right;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      white-space: nowrap;
+      margin-left: 10px;
+    }
+
+    /* GREEN VS YELLOW PROTOCOL SWITCHER */
+    .protocol-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: var(--bg-canvas);
+      padding: 5px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-hairline);
+      margin-bottom: 14px;
+    }
+    .proto-btn {
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .proto-btn .p-title {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .proto-btn .p-sub {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .proto-btn.active-green {
+      background: rgba(16, 229, 139, 0.1);
+      border-color: rgba(16, 229, 139, 0.35);
+      color: var(--text-primary);
+    }
+    .proto-btn.active-green .p-title { color: var(--signal-emerald); }
+    .proto-btn.active-yellow {
+      background: rgba(245, 166, 35, 0.12);
+      border-color: rgba(245, 166, 35, 0.4);
+      color: var(--text-primary);
+    }
+    .proto-btn.active-yellow .p-title { color: var(--signal-amber); }
+
+    /* GUIDED TIMER WIDGET */
+    .timer-box {
+      background: var(--bg-canvas);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .timer-digits {
+      font-family: var(--font-mono);
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--signal-lime);
+      line-height: 1;
+    }
+    .timer-step-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .timer-step-cue {
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+    }
+
+    /* CHECKLIST ROWS */
+    .habit-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 13px;
+      background: var(--bg-canvas);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .habit-row.done {
+      background: rgba(16, 229, 139, 0.07);
+      border-color: rgba(16, 229, 139, 0.3);
+    }
+    .habit-check {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 1.5px solid var(--border-strong);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.82rem;
+      color: transparent;
+      transition: all 0.15s;
+    }
+    .habit-row.done .habit-check {
+      background: var(--signal-emerald);
+      border-color: var(--signal-emerald);
+      color: #08090c;
+      font-weight: 800;
+    }
+
+    /* SANDWICH & RECIPE CARDS */
+    .recipe-card {
+      background: var(--bg-canvas);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 10px;
+      transition: border-color 0.15s;
+    }
+    .recipe-card.selected {
+      border-color: var(--signal-lime);
+      background: rgba(182, 255, 51, 0.04);
+    }
+    .tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    /* BOTTOM TAB BAR */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border-strong);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+      z-index: 90;
+    }
+    .nav-tab {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 14px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+    }
+    .nav-tab svg { width: 20px; height: 20px; stroke-width: 2; }
+    .nav-tab.active {
+      color: var(--signal-lime);
+      background: rgba(182, 255, 51, 0.08);
+    }
+
+    /* WEIGHT CHART */
+    .chart-box {
+      width: 100%;
+      height: 190px;
+      background: var(--bg-canvas);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      margin-bottom: 12px;
+    }
+    .stat-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .stat-cell {
+      background: var(--bg-canvas);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      padding: 10px;
+    }
+    .stat-cell .s-lbl {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+    }
+    .stat-cell .s-val {
+      font-family: var(--font-mono);
+      font-size: 1.08rem;
+      font-weight: 700;
+      margin-top: 2px;
     }
   </style>
 </head>
 <body>
 
-  <!-- 1. USERNAME & PASSWORD LOGIN SCREEN (AES-256-GCM Encrypted Vault) -->
-  <div id="loginScreen" class="login-wrap">
-    <h1>🔒 Sign In</h1>
-    <p>Enter your username and password to decrypt your connection and load your live <code>config.json</code> &amp; <code>data.json</code>.</p>
+  <!-- ================= AUTHENTICATION VIEW ================= -->
+  <div id="authView" class="auth-shell">
+    <div class="auth-card">
+      <div class="brand-mark"><span class="brand-dot"></span> PULSE // TELEMETRY</div>
+      <h1 style="font-size:1.35rem; margin-bottom:6px;">Private Command Vault</h1>
+      <p style="font-size:0.83rem; color:var(--text-secondary); margin-bottom:20px;">
+        Sign in to decrypt your private repository connection and load your live Cronometer diary, 5:00 AM protocol, and 3-day kitchen rotation.
+      </p>
 
-    <form onsubmit="event.preventDefault(); loginWithPassword();">
-      <div class="field">
-        <label>Username</label>
-        <input type="text" id="loginUser" autocomplete="username" placeholder="gabzsi" required />
-      </div>
-      <div class="field">
-        <label>Password</label>
-        <input type="password" id="loginPass" autocomplete="current-password" placeholder="••••••••" required />
-      </div>
-      <div style="display:flex; gap:10px; margin-top:16px;">
-        <button type="submit" class="btn" style="flex:1">Sign In</button>
-        <button type="button" class="btn-secondary" onclick="loadLocalFiles()">Local PC Mode</button>
-      </div>
-    </form>
-
-    <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--border); font-size:0.79rem; color:var(--muted);">
-      <a href="#" style="color:var(--accent); text-decoration:none;" onclick="toggleVaultSetup(event)">First-time setup: Create your Username &amp; Password</a>
-      <div id="vaultSetupBox" class="hidden" style="margin-top:12px;">
+      <form onsubmit="event.preventDefault(); loginWithPassword();">
         <div class="field">
-          <label>Private Repo (owner/repo)</label>
-          <input type="text" id="setupRepo" value="gabzsi/gethealthy-private" />
+          <label for="loginUser">Username</label>
+          <input type="text" id="loginUser" autocomplete="username" placeholder="gabzsi" required />
         </div>
         <div class="field">
-          <label>One-Time GitHub Fine-Grained Token (gets AES-256 encrypted by your password)</label>
-          <input type="password" id="setupToken" placeholder="github_pat_..." />
+          <label for="loginPass">Password</label>
+          <input type="password" id="loginPass" autocomplete="current-password" placeholder="••••••••" required />
         </div>
-        <button type="button" class="btn-secondary" style="width:100%" onclick="createEncryptedVault()">Encrypt &amp; Save Username/Password</button>
-      </div>
-    </div>
+        <button type="submit" class="btn-primary" style="width:100%; margin-top:4px;">Unlock Telemetry</button>
+      </form>
 
-    <div id="loginStatus" style="margin-top:12px; font-size:0.82rem; color:var(--yellow);"></div>
-  </div>
-
-  <!-- 2. DYNAMIC APP SHELL (Populated 100% from config.json + data.json) -->
-  <div id="appShell" class="hidden">
-    <header>
-      <div>
-        <h1 id="appTitle">GetHealthy</h1>
-        <div class="subtitle" id="dateSubtitle"></div>
-      </div>
-      <div class="top-actions">
-        <span class="streak-badge">🔥 Streak: <span id="streakCount">0</span>d</span>
-        <button class="btn-secondary" onclick="openConfigModal()">⚙️ Edit Plan (config.json)</button>
-        <button class="btn-secondary" onclick="promptChangePassword()">🔑 Change Password</button>
-        <button class="btn-secondary" onclick="logout()">🔒 Sign Out</button>
-      </div>
-    </header>
-
-    <div class="grid">
-      <div class="card">
-        <h2>
-          <span>1. Morning Movement</span>
-          <span class="pill" id="focusPill"></span>
-        </h2>
-        <div class="mode-switch">
-          <button class="mode-btn" id="btnGreen" onclick="setMode('green')">
-            🟢 Green Day (25–30m)
-            <small>Full morning session</small>
-          </button>
-          <button class="mode-btn" id="btnYellow" onclick="setMode('yellow')">
-            🟡 Yellow Day (10m Floor)
-            <small>Rough newborn night</small>
-          </button>
-        </div>
-        <div class="prescription-box" id="prescriptionBox"></div>
-        <div id="habitsContainer"></div>
-      </div>
-
-      <div class="card">
-        <h2>
-          <span>2. Cronometer Nutrition &amp; Targets</span>
-          <span class="pill" id="cronoDatePill">No sync yet</span>
-        </h2>
-
-        <div class="macro-bars">
-          <div class="macro-box">
-            <div class="val" id="kcalVal">—</div>
-            <div class="lbl" id="kcalTargetLbl">Target: 2,000–2,200 kcal</div>
-          </div>
-          <div class="macro-box">
-            <div class="val" id="protVal">—</div>
-            <div class="lbl" id="protTargetLbl">Target: 140g Protein</div>
-          </div>
-          <div class="macro-box">
-            <div class="val" id="fibVal">—</div>
-            <div class="lbl" id="fibTargetLbl">Target: 30g Fiber</div>
-          </div>
-        </div>
-
-        <div style="background:#0f172a; border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom:12px;">
-          <div style="font-size:0.84rem; font-weight:600; margin-bottom:6px;">📥 Cronometer Auto-Sync / CSV Upload</div>
-          <div style="font-size:0.78rem; color:var(--muted); margin-bottom:10px;">
-            Run <code>python sync_cronometer.py</code> (or let the 5 AM cloud job pull your Cronometer account automatically), or drop a CSV right here:
-          </div>
-          <input type="file" id="csvFileInput" accept=".csv" onchange="importCronometerCsv(event)" style="font-size:0.8rem;" />
-        </div>
-
-        <div style="font-size:0.84rem; font-weight:600; margin-bottom:6px;">Quick Manual Macro Entry (Today)</div>
-        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr auto; gap:8px;">
-          <input type="number" id="manualKcal" placeholder="kcal" />
-          <input type="number" id="manualProt" placeholder="Prot (g)" />
-          <input type="number" id="manualFib" placeholder="Fiber (g)" />
-          <button class="btn" onclick="saveManualMacros()">Save</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="grid">
-      <div class="card">
-        <h2>
-          <span>3. 3-Day Sandwich &amp; Meal Rotation</span>
-          <span class="pill">Dynamic from config.json</span>
-        </h2>
-        <select id="mealSelect" onchange="selectMeal()" style="margin-bottom:10px;"></select>
-        <div style="font-size:0.81rem; color:var(--accent); font-weight:600; margin-bottom:8px;" id="mealPrepNote"></div>
-        <div class="grocery-list" id="groceryContainer"></div>
-      </div>
-
-      <div class="card">
-        <h2>
-          <span>4. Scale Weight &amp; 7-Day Average</span>
-          <span class="pill" id="avgWeightPill"></span>
-        </h2>
-        <div style="display:flex; gap:8px; margin-bottom:10px;">
-          <input type="number" step="0.1" id="weightInput" placeholder="Morning weight (lbs)" />
-          <button class="btn" onclick="logWeight()">Log</button>
-        </div>
-        <div class="weight-list" id="weightList"></div>
-      </div>
+      <div id="loginStatus" style="margin-top:12px; font-size:0.8rem; color:var(--signal-amber);"></div>
     </div>
   </div>
 
-  <!-- 3. IN-APP CONFIG.JSON EDITOR MODAL -->
-  <div id="configModal" class="modal-backdrop hidden">
-    <div class="modal">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <h2 style="font-size:1.1rem;">⚙️ Edit Your Plan &amp; Meals (<code>config.json</code>)</h2>
-        <button class="btn-secondary" onclick="closeConfigModal()">✕ Close</button>
-      </div>
-      <textarea id="configEditorText" rows="18" style="font-family:monospace; font-size:0.82rem; margin-bottom:12px;"></textarea>
-      <div style="display:flex; justify-content:flex-end; gap:10px;">
-        <button class="btn" onclick="saveConfigFromModal()">💾 Save Changes</button>
-      </div>
+  <!-- ================= MAIN APPLICATION SHELL ================= -->
+  <div id="mainApp" class="hidden">
+    <div class="app-container">
+      <header class="top-bar">
+        <div>
+          <div class="date-kicker" id="headerDate">LOADING...</div>
+          <div class="top-title" id="headerTitle">5:00 AM Protocol</div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="streak-pill" title="Active daily habit streak">
+            <span>⚡</span> <span id="streakNum">0</span>D
+          </div>
+          <button class="btn-ghost" onclick="logout()" aria-label="Sign Out">🔒</button>
+        </div>
+      </header>
+
+      <!-- TAB 1: TODAY (CRONOMETER LIVE DIARY + 5:00 AM WORKOUT) -->
+      <section id="tab-today">
+        <!-- NUTRITION TELEMETRY PANEL -->
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-kicker">CRONOMETER TELEMETRY</div>
+              <div class="panel-title">Daily Energy &amp; Macros</div>
+            </div>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <input type="date" id="diaryDatePicker" class="mono" style="width:auto; padding:5px 8px; font-size:0.76rem;" onchange="changeDiaryDate(this.value)" />
+              <button class="btn-ghost" id="btnCloudSync" onclick="triggerCronometerCloudSync()" title="Trigger live Cronometer cloud pull">
+                ↻ Sync
+              </button>
+            </div>
+          </div>
+
+          <div class="telemetry-hero">
+            <div class="ring-wrap">
+              <svg width="120" height="120" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="#181b24" stroke-width="10" />
+                <circle id="kcalRingArc" cx="60" cy="60" r="50" fill="none" stroke="#b6ff33" stroke-width="10"
+                  stroke-linecap="round" stroke-dasharray="314.16" stroke-dashoffset="314.16"
+                  transform="rotate(-90 60 60)" style="transition: stroke-dashoffset 0.5s ease;" />
+              </svg>
+              <div class="ring-center">
+                <div class="kcal-num" id="kcalRemainingVal">2100</div>
+                <div class="kcal-lbl" id="kcalRingSub">Remaining</div>
+              </div>
+            </div>
+
+            <div class="macro-stack">
+              <div>
+                <div class="macro-row-top">
+                  <span style="font-weight:600; color:var(--signal-sky);">Protein</span>
+                  <span class="mono" id="protText">0 / 145g</span>
+                </div>
+                <div class="macro-bar-track">
+                  <div class="macro-bar-fill" id="protBar" style="width:0%; background:var(--signal-sky);"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="macro-row-top">
+                  <span style="font-weight:600; color:var(--signal-emerald);">Dietary Fiber (LDL)</span>
+                  <span class="mono" id="fibText">0 / 32g</span>
+                </div>
+                <div class="macro-bar-track">
+                  <div class="macro-bar-fill" id="fibBar" style="width:0%; background:var(--signal-emerald);"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="macro-row-top">
+                  <span style="font-weight:600; color:var(--signal-amber);">Carbs / Fat</span>
+                  <span class="mono" id="carbFatText">0g C • 0g F</span>
+                </div>
+                <div class="macro-bar-track">
+                  <div class="macro-bar-fill" id="carbBar" style="width:0%; background:var(--signal-amber);"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- QUICK ADD FROM ROTATION OR CRONOMETER SERVINGS -->
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span class="panel-kicker" id="foodLogHeader">TODAY'S FOOD LOG</span>
+            <div style="display:flex; gap:6px;">
+              <button class="btn-ghost" style="padding:4px 8px; font-size:0.72rem;" onclick="quickLogPreset('smoothie')">+ Smoothie (330)</button>
+              <button class="btn-ghost" style="padding:4px 8px; font-size:0.72rem;" onclick="quickLogPreset('sandwich')">+ 3-Day Sandwich</button>
+            </div>
+          </div>
+
+          <div id="foodDiaryList"></div>
+          <div id="syncStatusNote" style="font-size:0.74rem; color:var(--text-muted); margin-top:8px;"></div>
+        </div>
+
+        <!-- 5:00 AM TRAINING PROTOCOL & LIVE GUIDED TIMER -->
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-kicker">05:00 AM TRAINING BLOCK</div>
+              <div class="panel-title" id="workoutDayTitle">Loading...</div>
+            </div>
+            <span class="tag" id="workoutDurationTag">28 MIN</span>
+          </div>
+
+          <div class="protocol-toggle">
+            <button class="proto-btn active-green" id="btnProtoGreen" onclick="setDayMode('green')">
+              <div class="p-title"><span>●</span> Green Protocol</div>
+              <div class="p-sub">Full 28–30m morning session</div>
+            </button>
+            <button class="proto-btn" id="btnProtoYellow" onclick="setDayMode('yellow')">
+              <div class="p-title"><span>●</span> Survival Floor</div>
+              <div class="p-sub">Rough newborn night • 10m win</div>
+            </button>
+          </div>
+
+          <p id="workoutSummaryText" style="font-size:0.84rem; color:var(--text-secondary); margin-bottom:14px;"></p>
+
+          <!-- INTERACTIVE GUIDED 3-MIN IGNITION TIMER -->
+          <div class="timer-box">
+            <div>
+              <div class="panel-kicker" style="color:var(--signal-lime);">GUIDED 3-MIN IGNITION TIMER</div>
+              <div class="timer-step-name" id="timerStepName">1. Deep Squat Hold &amp; Hip Pry</div>
+              <div class="timer-step-cue" id="timerStepCue">Hold doorframe/elliptical, sink deep, pry knees out</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="timer-digits" id="timerDisplay">01:00</div>
+              <button class="btn-primary" id="timerBtn" style="margin-top:6px; padding:6px 12px; font-size:0.76rem;" onclick="toggleIgnitionTimer()">▶ Start</button>
+            </div>
+          </div>
+
+          <!-- DAILY HABIT CHECKLIST -->
+          <div id="habitsList"></div>
+        </div>
+      </section>
+
+      <!-- TAB 2: TRENDS (MACROFACTOR-STYLE WEIGHT GRAPH + RUNNING BRIDGE) -->
+      <section id="tab-trends" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-kicker">BIOMETRIC TELEMETRY</div>
+              <div class="panel-title">Scale Weight vs. 7-Day Trend</div>
+            </div>
+            <span class="tag" style="color:var(--signal-lime);">GOAL: 180.0 LB</span>
+          </div>
+
+          <div class="stat-strip">
+            <div class="stat-cell">
+              <div class="s-lbl">Trend Weight</div>
+              <div class="s-val" id="statTrendWeight">—</div>
+            </div>
+            <div class="stat-cell">
+              <div class="s-lbl">Latest Scale</div>
+              <div class="s-val" id="statLatestWeight">—</div>
+            </div>
+            <div class="stat-cell">
+              <div class="s-lbl">To Milestone 1</div>
+              <div class="s-val" id="statToGoal" style="color:var(--signal-lime);">—</div>
+            </div>
+          </div>
+
+          <!-- SVG SMOOTH TREND CHART -->
+          <div class="chart-box" id="weightChartBox"></div>
+
+          <div style="display:flex; gap:8px; margin-bottom:14px;">
+            <input type="number" step="0.1" id="weightInput" class="mono" placeholder="Log morning weight (lbs)..." />
+            <button class="btn-primary" onclick="logMorningWeight()">Log Weight</button>
+          </div>
+
+          <div id="weightHistoryList" style="max-height:180px; overflow-y:auto;"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-kicker">TENDON &amp; AEROBIC PROGRESSION</div>
+              <div class="panel-title">12-Week Bridge to Running</div>
+            </div>
+          </div>
+          <div id="runningBridgeContainer"></div>
+        </div>
+      </section>
+
+      <!-- TAB 3: KITCHEN (3-DAY HIS & HERS SANDWICH BAR + ALDI/COSTCO LIST) -->
+      <section id="tab-kitchen" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-kicker">SUN &amp; WED 20-MIN PREP</div>
+              <div class="panel-title">3-Day "His &amp; Hers" Sandwich &amp; Meal Bar</div>
+            </div>
+          </div>
+          <p style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:12px;">
+            Tap any 3-day prep below to set it as your active rotation and load its ingredients into your Aldi &amp; Costco checklist.
+          </p>
+          <div id="recipesList"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-kicker">SMART AISLE CHECKLIST</div>
+              <div class="panel-title">Aldi &amp; Costco Pull-List</div>
+            </div>
+            <button class="btn-ghost" style="font-size:0.72rem;" onclick="clearCheckedGroceries()">Clear Checked</button>
+          </div>
+
+          <div style="display:flex; gap:8px; margin-bottom:14px;">
+            <input type="text" id="customGroceryInput" placeholder="Add item for you or your wife (e.g. Avocados, Diapers)..." />
+            <button class="btn-primary" onclick="addCustomGrocery()">Add</button>
+          </div>
+
+          <div id="groceryByStore"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-kicker">90-SECOND BLENDER PROTOCOL</div>
+              <div class="panel-title">Whole-Food Creatine Smoothies (Zero Powder)</div>
+            </div>
+          </div>
+          <div id="smoothiesList"></div>
+        </div>
+      </section>
+
+      <!-- TAB 4: STUDIO (VISUAL SETTINGS & CRONOMETER SYNC SETUP) -->
+      <section id="tab-studio" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-kicker">TARGETS &amp; CALIBRATION</div>
+              <div class="panel-title">Nutrition &amp; Biometric Targets</div>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+            <div class="field">
+              <label>Daily Calorie Target</label>
+              <input type="number" id="cfgKcal" class="mono" />
+            </div>
+            <div class="field">
+              <label>Protein Target (g)</label>
+              <input type="number" id="cfgProt" class="mono" />
+            </div>
+            <div class="field">
+              <label>Dietary Fiber Target (g)</label>
+              <input type="number" id="cfgFiber" class="mono" />
+            </div>
+            <div class="field">
+              <label>Milestone 1 Weight (lbs)</label>
+              <input type="number" step="0.1" id="cfgWeightGoal" class="mono" />
+            </div>
+          </div>
+          <button class="btn-primary" style="width:100%;" onclick="saveVisualTargets()">Save Targets to Vault</button>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-kicker">ADD NEW 3-DAY SANDWICH OR MEAL</div>
+              <div class="panel-title">Add to Kitchen Rotation</div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Meal / Sandwich Name</label>
+            <input type="text" id="newMealName" placeholder="e.g. Turkey Pesto Focaccia Melt" />
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+            <div class="field"><label>Kcal</label><input type="number" id="newMealKcal" placeholder="520" /></div>
+            <div class="field"><label>Protein (g)</label><input type="number" id="newMealProt" placeholder="48" /></div>
+            <div class="field"><label>Fiber (g)</label><input type="number" id="newMealFib" placeholder="7" /></div>
+          </div>
+          <div class="field">
+            <label>20-Min Prep &amp; His/Hers Assembly Note</label>
+            <textarea id="newMealPrep" rows="2" placeholder="How to prep for 3 days..."></textarea>
+          </div>
+          <div class="field">
+            <label>Groceries (One per line, prefix with 'Costco:' or 'Aldi:')</label>
+            <textarea id="newMealGroceries" rows="3" placeholder="Costco: 2 lbs Chicken Breast&#10;Aldi: Sourdough Loaf"></textarea>
+          </div>
+          <button class="btn-primary" style="width:100%;" onclick="addNewMealCard()">Add to Rotation</button>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-kicker">CRONOMETER DIRECT IMPORT</div>
+              <div class="panel-title">Upload CSV or Manage Password</div>
+            </div>
+          </div>
+          <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:10px;">
+            Your cloud workflow automatically pulls your Cronometer Daily Nutrition, Individual Food Diary Servings, and Scale Weight 4×/day once <code>CRONOMETER_EMAIL</code> and <code>CRONOMETER_PASSWORD</code> are saved in your repo's GitHub Actions Secrets. You can also drop any exported CSV below:
+          </p>
+          <input type="file" accept=".csv" onchange="importCronometerCsv(event)" style="margin-bottom:12px; font-size:0.8rem;" />
+          <button class="btn-ghost" style="width:100%;" onclick="promptChangePassword()">🔑 Change Device Login Password</button>
+        </div>
+      </section>
     </div>
+
+    <!-- BOTTOM MOBILE NAVIGATION -->
+    <nav class="bottom-nav" aria-label="Primary Navigation">
+      <button class="nav-tab active" id="nav-today" onclick="switchTab('today')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        <span>Today</span>
+      </button>
+      <button class="nav-tab" id="nav-trends" onclick="switchTab('trends')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <span>Trends</span>
+      </button>
+      <button class="nav-tab" id="nav-kitchen" onclick="switchTab('kitchen')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        <span>Kitchen</span>
+      </button>
+      <button class="nav-tab" id="nav-studio" onclick="switchTab('studio')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Studio</span>
+      </button>
+    </nav>
   </div>
 
   <script>
-    // Optional pre-encrypted vault string (AES-256-GCM encrypted with your Username+Password)
-    const PRECONFIGURED_VAULT = {"salt": "Ql5CTqCFgRM047863eHVLw==", "iv": "M6jKXjGzb3Jncdqd", "data": "dJ57GWZPqOplrNKoxKBy+fq+Aj0wyYoW18du4ecH8wbMvNYqRbjTsejp9X5K+rF+k/U5fsjDtJ5J0IyoayAs6CSfd5W4DDq3mq1JU5inUAiz6vy0IRNUDXLBuHlopBlV1LoQIXbLHQRk7Q=="};
+    const PRECONFIGURED_VAULT = {"salt": "GG8WqAf1smGnOuG98VVj7w==", "iv": "3lYBi3tZROlT7ohA", "data": "bLrNzMG9zfsirAodgoh8cbfAOUejWLp7+d7QU4MkQD+07VVdGZ63Y8zAu+KdVOnGDuUgL/2WPbJOZ1cEdhqBScNI1b6nlHs3Z2wJBdfLLUf1vDO9paeaK+C0xgg2u1damAPcVhjGQalVlg=="};
 
     let CONFIG = null;
     let DATA = null;
     let GH_AUTH = null;
 
-    const todayKey = new Date().toISOString().slice(0, 10);
+    const todayIso = new Date().toISOString().slice(0, 10);
+    let selectedDiaryDate = todayIso;
     const dayName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][new Date().getDay()];
 
-    function toggleVaultSetup(e) {
-      e.preventDefault();
-      document.getElementById("vaultSetupBox").classList.toggle("hidden");
-    }
+    // Guided Timer State
+    let timerInterval = null;
+    let timerStepIdx = 0;
+    let timerSecondsLeft = 60;
 
     async function deriveKey(username, password, saltBytes) {
       const enc = new TextEncoder();
@@ -415,35 +893,8 @@
       );
     }
 
-    function bufToB64(buf) {
-      return btoa(String.fromCharCode(...new Uint8Array(buf)));
-    }
-
-    function b64ToBuf(b64) {
-      return Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-    }
-
-    async function createEncryptedVault() {
-      const user = document.getElementById("loginUser").value.trim();
-      const pass = document.getElementById("loginPass").value;
-      const repo = document.getElementById("setupRepo").value.trim();
-      const token = document.getElementById("setupToken").value.trim();
-      const status = document.getElementById("loginStatus");
-
-      if (!user || !pass || !repo || !token) {
-        status.textContent = "Fill in Username, Password, Repo, and Token above first.";
-        return;
-      }
-      const salt = crypto.getRandomValues(new Uint8Array(16));
-      const iv = crypto.getRandomValues(new Uint8Array(12));
-      const key = await deriveKey(user, pass, salt);
-      const plain = new TextEncoder().encode(JSON.stringify({ repo, token }));
-      const cipher = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, plain);
-      const vaultObj = { salt: bufToB64(salt), iv: bufToB64(iv), data: bufToB64(cipher) };
-      localStorage.setItem("gethealthy_encrypted_vault", JSON.stringify(vaultObj));
-      status.textContent = "✅ Username & Password encrypted! Clicking Sign In now...";
-      await loginWithPassword();
-    }
+    function bufToB64(buf) { return btoa(String.fromCharCode(...new Uint8Array(buf))); }
+    function b64ToBuf(b64) { return Uint8Array.from(atob(b64), c => c.charCodeAt(0)); }
 
     async function loginWithPassword() {
       const user = document.getElementById("loginUser").value.trim();
@@ -452,27 +903,32 @@
       const rawVault = localStorage.getItem("gethealthy_encrypted_vault") || (PRECONFIGURED_VAULT ? JSON.stringify(PRECONFIGURED_VAULT) : null);
 
       if (!rawVault) {
-        status.textContent = "No encrypted vault found yet—click 'First-time setup' below or 'Local PC Mode'.";
+        status.textContent = "Vault not initialized.";
         return;
       }
       try {
-        status.textContent = "Decrypting vault & signing in...";
+        status.textContent = "Decrypting telemetry vault...";
         const v = JSON.parse(rawVault);
         const key = await deriveKey(user, pass, b64ToBuf(v.salt));
         const decBuf = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64ToBuf(v.iv) }, key, b64ToBuf(v.data));
         const { repo, token } = JSON.parse(new TextDecoder().decode(decBuf));
 
-        const cfgRes = await ghFetchFile(repo, token, "config.json");
-        const datRes = await ghFetchFile(repo, token, "data.json");
+        const [cfgRes, datRes] = await Promise.all([
+          ghFetchFile(repo, token, "config.json"),
+          ghFetchFile(repo, token, "data.json")
+        ]);
         CONFIG = cfgRes.data;
         DATA = datRes.data;
         GH_AUTH = { repo, token, configSha: cfgRes.sha, dataSha: datRes.sha };
         sessionStorage.setItem("gethealthy_session", JSON.stringify({ repo, token }));
-        document.getElementById("loginScreen").classList.add("hidden");
-        document.getElementById("appShell").classList.remove("hidden");
-        render();
+
+        document.getElementById("authView").classList.add("hidden");
+        document.getElementById("mainApp").classList.remove("hidden");
+        document.getElementById("diaryDatePicker").value = selectedDiaryDate;
+        initTimerReset();
+        renderAll();
       } catch (e) {
-        status.textContent = "❌ Invalid username or password (or repo unreachable).";
+        status.textContent = "Invalid credentials or connection error.";
       }
     }
 
@@ -481,26 +937,27 @@
       if (sess) {
         try {
           const { repo, token } = JSON.parse(sess);
-          const cfgRes = await ghFetchFile(repo, token, "config.json");
-          const datRes = await ghFetchFile(repo, token, "data.json");
+          const [cfgRes, datRes] = await Promise.all([
+            ghFetchFile(repo, token, "config.json"),
+            ghFetchFile(repo, token, "data.json")
+          ]);
           CONFIG = cfgRes.data;
           DATA = datRes.data;
           GH_AUTH = { repo, token, configSha: cfgRes.sha, dataSha: datRes.sha };
-          document.getElementById("loginScreen").classList.add("hidden");
-          document.getElementById("appShell").classList.remove("hidden");
-          render();
+          document.getElementById("authView").classList.add("hidden");
+          document.getElementById("mainApp").classList.remove("hidden");
+          document.getElementById("diaryDatePicker").value = selectedDiaryDate;
+          initTimerReset();
+          renderAll();
         } catch (e) {}
       }
     });
 
     async function ghFetchFile(repo, token, path) {
-      const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Accept": "application/vnd.github+json"
-        }
+      const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}?t=${Date.now()}`, {
+        headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github+json" }
       });
-      if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+      if (!res.ok) throw new Error(`API ${res.status}`);
       const json = await res.json();
       const content = new TextDecoder().decode(Uint8Array.from(atob(json.content.replace(/\n/g, "")), c => c.charCodeAt(0)));
       return { data: JSON.parse(content), sha: json.sha };
@@ -510,8 +967,6 @@
       const bytes = new TextEncoder().encode(JSON.stringify(obj, null, 2));
       let bin = "";
       bytes.forEach(b => bin += String.fromCharCode(b));
-      const content = btoa(bin);
-
       const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
         method: "PUT",
         headers: {
@@ -519,199 +974,601 @@
           "Accept": "application/vnd.github+json",
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ message, content, sha })
+        body: JSON.stringify({ message, content: btoa(bin), sha })
       });
-      if (!res.ok) throw new Error(`Failed saving ${path}: ${res.status}`);
+      if (!res.ok) throw new Error(`Save ${res.status}`);
       const out = await res.json();
       return out.content.sha;
     }
 
-    async function loadLocalFiles() {
-      const status = document.getElementById("loginStatus");
+    async function persistData(msg = "Update telemetry data") {
+      if (!GH_AUTH) return;
       try {
-        const [cfgRes, datRes] = await Promise.all([fetch("./config.json"), fetch("./data.json")]);
-        CONFIG = await cfgRes.json();
-        const savedLocalData = localStorage.getItem("gethealthy_local_data");
-        DATA = savedLocalData ? JSON.parse(savedLocalData) : await datRes.json();
-        const savedLocalCfg = localStorage.getItem("gethealthy_local_config");
-        if (savedLocalCfg) CONFIG = JSON.parse(savedLocalCfg);
-
-        document.getElementById("loginScreen").classList.add("hidden");
-        document.getElementById("appShell").classList.remove("hidden");
-        render();
-      } catch (e) {
-        status.textContent = "Note: Browsers block fetch('./config.json') over file://. Sign in above once hosted.";
-      }
+        GH_AUTH.dataSha = await ghSaveFile(GH_AUTH.repo, GH_AUTH.token, "data.json", DATA, GH_AUTH.dataSha, msg);
+      } catch (e) { console.error(e); }
     }
 
-    async function persistData(msg = "Update health log") {
-      localStorage.setItem("gethealthy_local_data", JSON.stringify(DATA));
-      if (GH_AUTH) {
-        try {
-          GH_AUTH.dataSha = await ghSaveFile(GH_AUTH.repo, GH_AUTH.token, "data.json", DATA, GH_AUTH.dataSha, msg);
-        } catch (e) { console.error(e); }
-      }
-    }
-
-    async function persistConfig(msg = "Update plan config") {
-      localStorage.setItem("gethealthy_local_config", JSON.stringify(CONFIG));
-      if (GH_AUTH) {
-        try {
-          GH_AUTH.configSha = await ghSaveFile(GH_AUTH.repo, GH_AUTH.token, "config.json", CONFIG, GH_AUTH.configSha, msg);
-        } catch (e) { console.error(e); }
-      }
+    async function persistConfig(msg = "Update configuration") {
+      if (!GH_AUTH) return;
+      try {
+        GH_AUTH.configSha = await ghSaveFile(GH_AUTH.repo, GH_AUTH.token, "config.json", CONFIG, GH_AUTH.configSha, msg);
+      } catch (e) { console.error(e); }
     }
 
     function logout() {
       sessionStorage.removeItem("gethealthy_session");
       GH_AUTH = null;
-      document.getElementById("appShell").classList.add("hidden");
-      document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("mainApp").classList.add("hidden");
+      document.getElementById("authView").classList.remove("hidden");
     }
 
-    async function promptChangePassword() {
+    function switchTab(tabId) {
+      ["today", "trends", "kitchen", "studio"].forEach(t => {
+        document.getElementById(`tab-${t}`).classList.toggle("hidden", t !== tabId);
+        document.getElementById(`nav-${t}`).classList.toggle("active", t === tabId);
+      });
+      if (tabId === "trends") renderWeightChart();
+    }
+
+    function changeDiaryDate(val) {
+      if (!val) return;
+      selectedDiaryDate = val;
+      renderAll();
+    }
+
+    // Trigger GitHub Action workflow_dispatch directly from phone to pull Cronometer live!
+    async function triggerCronometerCloudSync() {
       if (!GH_AUTH) return;
-      const newUser = prompt("Enter your desired Username:", "gabzsi");
-      if (!newUser) return;
-      const newPass = prompt("Enter your new Password:");
-      if (!newPass) return;
-      const salt = crypto.getRandomValues(new Uint8Array(16));
-      const iv = crypto.getRandomValues(new Uint8Array(12));
-      const key = await deriveKey(newUser, newPass, salt);
-      const plain = new TextEncoder().encode(JSON.stringify({ repo: GH_AUTH.repo, token: GH_AUTH.token }));
-      const cipher = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, plain);
-      const vaultObj = { salt: bufToB64(salt), iv: bufToB64(iv), data: bufToB64(cipher) };
-      localStorage.setItem("gethealthy_encrypted_vault", JSON.stringify(vaultObj));
-      alert("Password updated on this device!");
+      const btn = document.getElementById("btnCloudSync");
+      const note = document.getElementById("syncStatusNote");
+      btn.textContent = "⏳ Syncing...";
+      note.textContent = "Triggering live Cronometer pull via GitHub Cloud Runner...";
+      try {
+        const res = await fetch(`https://api.github.com/repos/${GH_AUTH.repo}/actions/workflows/daily_5am_and_cronometer.yml/dispatches`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${GH_AUTH.token}`,
+            "Accept": "application/vnd.github+json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ ref: "main", inputs: { send_push: "false" } })
+        });
+        if (res.status === 204) {
+          note.textContent = "Cloud runner started! Pulling fresh Cronometer food diary & weight (refreshes in ~25s)...";
+          setTimeout(async () => {
+            const datRes = await ghFetchFile(GH_AUTH.repo, GH_AUTH.token, "data.json");
+            DATA = datRes.data;
+            GH_AUTH.dataSha = datRes.sha;
+            btn.textContent = "↻ Sync";
+            renderAll();
+          }, 25000);
+        } else {
+          btn.textContent = "↻ Sync";
+          note.textContent = `Could not dispatch runner (status ${res.status}).`;
+        }
+      } catch (e) {
+        btn.textContent = "↻ Sync";
+        note.textContent = "Error triggering sync: " + e.message;
+      }
     }
 
-    function render() {
+    function renderAll() {
       if (!CONFIG || !DATA) return;
-      if (!DATA.days[todayKey]) DATA.days[todayKey] = { mode: "green", checks: {} };
-      const today = DATA.days[todayKey];
+      DATA.days = DATA.days || {};
+      if (!DATA.days[todayIso]) DATA.days[todayIso] = { mode: "green", checks: {} };
+      const todayObj = DATA.days[todayIso];
       const prof = CONFIG.profile || {};
 
-      document.getElementById("appTitle").textContent = prof.title || "GetHealthy";
-      document.getElementById("dateSubtitle").textContent =
-        `${dayName}, ${todayKey} • Wake: ${prof.wakeTime || "05:00"} • Goal: ${prof.weightGoalLbs || 180} lbs`;
+      // Header
+      document.getElementById("headerDate").textContent = `${dayName.toUpperCase()} // ${todayIso}`;
+      document.getElementById("headerTitle").textContent = prof.title || "PULSE // ATHLETIC";
 
-      const sched = (CONFIG.weeklySchedule && CONFIG.weeklySchedule[dayName]) || { focus: "Daily Movement", green: "", yellow: "" };
-      document.getElementById("focusPill").textContent = sched.focus;
-      document.getElementById("btnGreen").className = "mode-btn " + (today.mode === "green" ? "active-green" : "");
-      document.getElementById("btnYellow").className = "mode-btn " + (today.mode === "yellow" ? "active-yellow" : "");
-      document.getElementById("prescriptionBox").innerHTML =
-        `<strong>${today.mode === "green" ? "🟢 Green Day:" : "🟡 Yellow Survival Floor:"}</strong> ${today.mode === "green" ? sched.green : sched.yellow}`;
-
-      const hContainer = document.getElementById("habitsContainer");
-      hContainer.innerHTML = "";
-      (CONFIG.dailyHabits || []).forEach(h => {
-        const checked = !!today.checks[h.id];
-        const lbl = document.createElement("label");
-        lbl.className = "checklist-item" + (checked ? " checked" : "");
-        lbl.innerHTML = `<input type="checkbox" ${checked ? "checked" : ""} onchange="toggleHabit('${h.id}')" />
-          <div>
-            <div class="item-title">${h.title}</div>
-            <div class="item-desc">${h.desc}</div>
-          </div>`;
-        hContainer.appendChild(lbl);
-      });
-
+      // Streak
       let streak = 0;
-      Object.keys(DATA.days || {}).sort().reverse().forEach(d => {
+      Object.keys(DATA.days).sort().reverse().forEach(d => {
         const c = DATA.days[d].checks || {};
         if (Object.values(c).some(Boolean)) streak++;
       });
-      document.getElementById("streakCount").textContent = streak;
+      document.getElementById("streakNum").textContent = streak;
 
-      const summaries = (DATA.cronometer && DATA.cronometer.dailySummaries) || [];
-      const latestMacro = summaries.find(s => s.date === todayKey) || summaries[summaries.length - 1];
-      document.getElementById("kcalTargetLbl").textContent = `Target: ${prof.calorieTarget?.min || 2000}–${prof.calorieTarget?.max || 2200} kcal`;
-      document.getElementById("protTargetLbl").textContent = `Target: ${prof.proteinTargetGrams || 140}g Protein`;
-      document.getElementById("fibTargetLbl").textContent = `Target: ${prof.fiberTargetGrams || 30}g Fiber`;
+      // 1. Nutrition Telemetry & Cronometer Food Log for selectedDiaryDate
+      const kcalTarget = prof.calorieTarget?.target || 2100;
+      const protTarget = prof.proteinTargetGrams || 145;
+      const fibTarget = prof.fiberTargetGrams || 32;
+      const carbsTarget = prof.carbsTargetGrams || 195;
 
-      if (latestMacro) {
-        document.getElementById("cronoDatePill").textContent = `Logged: ${latestMacro.date}`;
-        document.getElementById("kcalVal").textContent = `${Math.round(latestMacro.kcal)} kcal`;
-        document.getElementById("protVal").textContent = `${Math.round(latestMacro.protein)} g`;
-        document.getElementById("fibVal").textContent = `${Math.round(latestMacro.fiber)} g`;
-      } else {
-        document.getElementById("cronoDatePill").textContent = "Awaiting Cronometer sync";
-        document.getElementById("kcalVal").textContent = "—";
-        document.getElementById("protVal").textContent = "—";
-        document.getElementById("fibVal").textContent = "—";
+      const summaries = DATA.cronometer?.dailySummaries || [];
+      const servingsMap = DATA.cronometer?.servingsByDate || {};
+      const dayServings = servingsMap[selectedDiaryDate] || [];
+      let daySummary = summaries.find(s => s.date === selectedDiaryDate);
+
+      // If no summary row exists but servings exist, sum the servings!
+      if (!daySummary && dayServings.length > 0) {
+        daySummary = dayServings.reduce((acc, item) => ({
+          kcal: acc.kcal + (item.kcal || 0),
+          protein: acc.protein + (item.protein || 0),
+          carbs: acc.carbs + (item.carbs || 0),
+          fat: acc.fat + (item.fat || 0),
+          fiber: acc.fiber + (item.fiber || 0)
+        }), { kcal: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 });
       }
 
-      const mealSelect = document.getElementById("mealSelect");
-      mealSelect.innerHTML = "";
-      (CONFIG.meals || []).forEach(m => {
-        const opt = document.createElement("option");
-        opt.value = m.id;
-        opt.textContent = `[${m.category}] ${m.name} (~${m.kcal} kcal, ${m.protein}g P)`;
-        mealSelect.appendChild(opt);
-      });
-      const activeMealId = DATA.selectedMealId || (CONFIG.meals?.[0]?.id);
-      mealSelect.value = activeMealId;
-      const activeMeal = (CONFIG.meals || []).find(m => m.id === activeMealId) || CONFIG.meals?.[0];
+      const kcalEaten = Math.round(daySummary?.kcal || 0);
+      const protEaten = Math.round(daySummary?.protein || 0);
+      const fibEaten = Math.round(daySummary?.fiber || 0);
+      const carbsEaten = Math.round(daySummary?.carbs || 0);
+      const fatEaten = Math.round(daySummary?.fat || 0);
 
-      const gContainer = document.getElementById("groceryContainer");
-      gContainer.innerHTML = "";
-      if (activeMeal) {
-        document.getElementById("mealPrepNote").textContent = activeMeal.prepNote || "";
-        (activeMeal.groceries || []).forEach((item, idx) => {
-          const gKey = `${activeMeal.id}_${idx}`;
-          const checked = !!(DATA.groceryChecked && DATA.groceryChecked[gKey]);
-          const lbl = document.createElement("label");
-          lbl.className = "checklist-item" + (checked ? " checked" : "");
-          lbl.style.marginBottom = "0";
-          lbl.innerHTML = `<input type="checkbox" ${checked ? "checked" : ""} onchange="toggleGrocery('${gKey}')" />
-            <div style="font-size:0.81rem;">${item}</div>`;
-          gContainer.appendChild(lbl);
+      const kcalRem = kcalTarget - kcalEaten;
+      document.getElementById("kcalRemainingVal").textContent = Math.abs(kcalRem);
+      document.getElementById("kcalRingSub").textContent = kcalRem >= 0 ? `Left of ${kcalTarget}` : `Over ${kcalTarget}`;
+
+      const pctKcal = Math.min(1, kcalEaten / kcalTarget);
+      const circumference = 314.16;
+      const arc = document.getElementById("kcalRingArc");
+      arc.style.strokeDashoffset = (circumference * (1 - pctKcal)).toFixed(2);
+      arc.setAttribute("stroke", kcalRem >= 0 ? "#b6ff33" : "#ff5a36");
+
+      document.getElementById("protText").textContent = `${protEaten} / ${protTarget}g`;
+      document.getElementById("protBar").style.width = `${Math.min(100, (protEaten / protTarget) * 100)}%`;
+
+      document.getElementById("fibText").textContent = `${fibEaten} / ${fibTarget}g`;
+      document.getElementById("fibBar").style.width = `${Math.min(100, (fibEaten / fibTarget) * 100)}%`;
+
+      document.getElementById("carbFatText").textContent = `${carbsEaten}g C • ${fatEaten}g F`;
+      document.getElementById("carbBar").style.width = `${Math.min(100, (carbsEaten / carbsTarget) * 100)}%`;
+
+      // Food Diary Items
+      document.getElementById("foodLogHeader").textContent =
+        selectedDiaryDate === todayIso ? `TODAY'S FOOD LOG (${kcalEaten} KCAL)` : `FOOD LOG // ${selectedDiaryDate} (${kcalEaten} KCAL)`;
+      const diaryContainer = document.getElementById("foodDiaryList");
+      diaryContainer.innerHTML = "";
+
+      if (dayServings.length === 0) {
+        diaryContainer.innerHTML = `
+          <div class="diary-item" style="justify-content:center; color:var(--text-muted); padding:16px;">
+            No individual food items synced for ${selectedDiaryDate} yet. Tap "+ Smoothie", "+ 3-Day Sandwich", or "↻ Sync" above.
+          </div>`;
+      } else {
+        dayServings.forEach((item, idx) => {
+          const row = document.createElement("div");
+          row.className = "diary-item";
+          row.innerHTML = `
+            <div>
+              <div class="diary-item-name">${item.name}</div>
+              <div class="diary-item-sub">${item.group || "Logged"} ${item.amount ? "• " + item.amount : ""}</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="diary-item-macros">
+                <div style="color:var(--text-primary); font-weight:700;">${Math.round(item.kcal)} kcal</div>
+                <div style="color:var(--signal-sky);">${Math.round(item.protein)}g P • ${Math.round(item.fiber || 0)}g Fib</div>
+              </div>
+              <button class="btn-ghost" style="padding:3px 7px; font-size:0.7rem;" onclick="removeDiaryItem(${idx})" title="Remove">✕</button>
+            </div>`;
+          diaryContainer.appendChild(row);
         });
       }
 
-      const wList = document.getElementById("weightList");
-      wList.innerHTML = "";
-      const weights = (DATA.weights || []).slice().reverse();
-      if (weights.length > 0) {
-        const recent = weights.slice(0, 7);
-        const avg = (recent.reduce((s, x) => s + Number(x.weight), 0) / recent.length).toFixed(1);
-        document.getElementById("avgWeightPill").textContent = `7-Day Avg: ${avg} lbs`;
-      }
-      weights.forEach(w => {
+      document.getElementById("syncStatusNote").textContent =
+        DATA.cronometer?.lastSync ? `Last Cronometer sync: ${DATA.cronometer.lastSync.replace("T", " ").slice(0, 16)}` : "";
+
+      // 2. 5:00 AM Workout Section
+      const sched = (CONFIG.weeklySchedule && CONFIG.weeklySchedule[dayName]) || {
+        focus: "Morning Training", greenDurationMin: 28, yellowDurationMin: 10, green: "", yellow: ""
+      };
+      document.getElementById("workoutDayTitle").textContent = sched.focus;
+      const isGreen = todayObj.mode !== "yellow";
+      document.getElementById("workoutDurationTag").textContent = isGreen ? `${sched.greenDurationMin || 28} MIN GREEN` : `${sched.yellowDurationMin || 10} MIN FLOOR`;
+      document.getElementById("btnProtoGreen").className = "proto-btn " + (isGreen ? "active-green" : "");
+      document.getElementById("btnProtoYellow").className = "proto-btn " + (!isGreen ? "active-yellow" : "");
+      document.getElementById("workoutSummaryText").textContent = isGreen ? sched.green : sched.yellow;
+
+      // Habits
+      const habitsEl = document.getElementById("habitsList");
+      habitsEl.innerHTML = "";
+      (CONFIG.dailyHabits || []).forEach(h => {
+        const done = !!todayObj.checks[h.id];
         const div = document.createElement("div");
-        div.className = "weight-row";
-        div.innerHTML = `<span style="color:var(--muted)">${w.date} ${w.source === 'cronometer' ? '(Crono)' : ''}</span><strong>${Number(w.weight).toFixed(1)} lbs</strong>`;
-        wList.appendChild(div);
+        div.className = "habit-row" + (done ? " done" : "");
+        div.onclick = () => toggleHabit(h.id);
+        div.innerHTML = `
+          <div class="habit-check">✓</div>
+          <div>
+            <div style="font-weight:600; font-size:0.88rem;">${h.title}</div>
+            <div style="font-size:0.76rem; color:var(--text-secondary);">${h.desc}</div>
+          </div>`;
+        habitsEl.appendChild(div);
+      });
+
+      // 3. Kitchen Tab (3-Day Sandwiches & Categorized Groceries)
+      const recipesEl = document.getElementById("recipesList");
+      recipesEl.innerHTML = "";
+      const activeMealId = DATA.selectedMealId || (CONFIG.meals?.[0]?.id);
+
+      (CONFIG.meals || []).forEach(m => {
+        const isSel = m.id === activeMealId;
+        const card = document.createElement("div");
+        card.className = "recipe-card" + (isSel ? " selected" : "");
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:6px;">
+            <div>
+              <span class="tag" style="margin-bottom:4px;">${m.category}</span>
+              <div style="font-weight:700; font-size:0.95rem;">${m.name}</div>
+            </div>
+            <div class="mono" style="text-align:right; font-size:0.78rem; color:var(--signal-lime); white-space:nowrap;">
+              ${m.kcal} kcal<br/><span style="color:var(--signal-sky);">${m.protein}g P • ${m.fiber || 6}g Fib</span>
+            </div>
+          </div>
+          ${m.hisHers ? `<div style="font-size:0.78rem; color:var(--text-primary); background:var(--bg-surface); padding:8px 10px; border-radius:6px; margin-bottom:8px;"><strong>His &amp; Hers Split:</strong> ${m.hisHers}</div>` : ""}
+          <div style="font-size:0.76rem; color:var(--text-secondary); margin-bottom:10px;">${m.prepNote || ""}</div>
+          <button class="${isSel ? 'btn-primary' : 'btn-ghost'}" style="width:100%; padding:8px;" onclick="selectActiveMeal('${m.id}')">
+            ${isSel ? "✓ Active 3-Day Rotation (Groceries Loaded)" : "Select for 3-Day Prep & Load Groceries"}
+          </button>`;
+        recipesEl.appendChild(card);
+      });
+
+      renderCategorizedGroceries(activeMealId);
+
+      // Smoothies
+      const smEl = document.getElementById("smoothiesList");
+      smEl.innerHTML = "";
+      (CONFIG.smoothies || []).forEach(sm => {
+        const div = document.createElement("div");
+        div.className = "recipe-card";
+        div.innerHTML = `
+          <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+            <strong style="font-size:0.9rem;">${sm.name}</strong>
+            <span class="mono" style="font-size:0.78rem; color:var(--signal-lime);">${sm.kcal} kcal • ${sm.protein}g P</span>
+          </div>
+          <div style="font-size:0.78rem; color:var(--text-secondary);">${sm.recipe}</div>`;
+        smEl.appendChild(div);
+      });
+
+      // 4. Studio Tab Inputs
+      document.getElementById("cfgKcal").value = kcalTarget;
+      document.getElementById("cfgProt").value = protTarget;
+      document.getElementById("cfgFiber").value = fibTarget;
+      document.getElementById("cfgWeightGoal").value = prof.weightGoalLbs || 180.0;
+
+      // Running Bridge
+      const rbEl = document.getElementById("runningBridgeContainer");
+      rbEl.innerHTML = "";
+      (CONFIG.runningBridge || []).forEach(rb => {
+        const div = document.createElement("div");
+        div.className = "recipe-card" + (rb.active ? " selected" : "");
+        div.innerHTML = `
+          <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+            <span class="tag" style="color:${rb.active ? 'var(--signal-lime)' : 'var(--text-secondary)'}">${rb.phase}</span>
+            <span class="mono" style="font-size:0.75rem; color:var(--text-secondary);">${rb.weightBand}</span>
+          </div>
+          <div style="font-weight:700; font-size:0.9rem; margin-bottom:4px;">${rb.title}</div>
+          <div style="font-size:0.78rem; color:var(--text-secondary);">${rb.protocol}</div>`;
+        rbEl.appendChild(div);
+      });
+
+      renderWeightChart();
+    }
+
+    function renderCategorizedGroceries(activeMealId) {
+      const container = document.getElementById("groceryByStore");
+      container.innerHTML = "";
+      const activeMeal = (CONFIG.meals || []).find(m => m.id === activeMealId) || CONFIG.meals?.[0];
+      DATA.groceryChecked = DATA.groceryChecked || {};
+      DATA.customGroceries = DATA.customGroceries || [];
+
+      const groups = { Costco: [], Aldi: [], Custom: [] };
+      if (activeMeal && activeMeal.groceries) {
+        activeMeal.groceries.forEach((g, idx) => {
+          const itemObj = typeof g === "string" ? { store: "Aldi", item: g } : g;
+          const store = groups[itemObj.store] ? itemObj.store : "Aldi";
+          groups[store].push({ key: `${activeMeal.id}_${idx}`, text: itemObj.item });
+        });
+      }
+      DATA.customGroceries.forEach((txt, idx) => {
+        groups.Custom.push({ key: `custom_${idx}`, text: txt, isCustom: true, idx });
+      });
+
+      ["Costco", "Aldi", "Custom"].forEach(store => {
+        if (groups[store].length === 0) return;
+        const h = document.createElement("div");
+        h.className = "diary-group-title";
+        h.textContent = `${store.toUpperCase()} AISLE (${groups[store].length})`;
+        container.appendChild(h);
+
+        groups[store].forEach(entry => {
+          const done = !!DATA.groceryChecked[entry.key];
+          const row = document.createElement("div");
+          row.className = "habit-row" + (done ? " done" : "");
+          row.style.padding = "9px 12px";
+          row.onclick = () => {
+            DATA.groceryChecked[entry.key] = !DATA.groceryChecked[entry.key];
+            persistData("Toggle grocery");
+            renderCategorizedGroceries(activeMealId);
+          };
+          row.innerHTML = `
+            <div class="habit-check">✓</div>
+            <div style="flex:1; font-size:0.84rem; ${done ? 'text-decoration:line-through; color:var(--text-muted);' : ''}">${entry.text}</div>`;
+          container.appendChild(row);
+        });
       });
     }
 
-    function setMode(m) { DATA.days[todayKey].mode = m; persistData("Switch daily mode"); render(); }
-    function toggleHabit(id) { DATA.days[todayKey].checks[id] = !DATA.days[todayKey].checks[id]; persistData(`Toggle ${id}`); render(); }
-    function selectMeal() { DATA.selectedMealId = document.getElementById("mealSelect").value; persistData("Select active meal"); render(); }
-    function toggleGrocery(key) { DATA.groceryChecked = DATA.groceryChecked || {}; DATA.groceryChecked[key] = !DATA.groceryChecked[key]; persistData("Toggle grocery item"); render(); }
-
-    function logWeight() {
-      const val = parseFloat(document.getElementById("weightInput").value);
-      if (!val || val < 100 || val > 350) return;
-      DATA.weights = (DATA.weights || []).filter(w => w.date !== todayKey);
-      DATA.weights.push({ date: todayKey, weight: val, source: "manual" });
-      DATA.weights.sort((a, b) => a.date.localeCompare(b.date));
-      document.getElementById("weightInput").value = "";
-      persistData("Log morning weight");
-      render();
+    function addCustomGrocery() {
+      const inp = document.getElementById("customGroceryInput");
+      const val = inp.value.trim();
+      if (!val) return;
+      DATA.customGroceries = DATA.customGroceries || [];
+      DATA.customGroceries.push(val);
+      inp.value = "";
+      persistData("Add custom grocery item");
+      renderCategorizedGroceries(DATA.selectedMealId);
     }
 
-    function saveManualMacros() {
-      const kcal = parseFloat(document.getElementById("manualKcal").value) || 0;
-      const protein = parseFloat(document.getElementById("manualProt").value) || 0;
-      const fiber = parseFloat(document.getElementById("manualFib").value) || 0;
-      if (!kcal && !protein) return;
-      DATA.cronometer = DATA.cronometer || { dailySummaries: [] };
-      DATA.cronometer.dailySummaries = DATA.cronometer.dailySummaries.filter(s => s.date !== todayKey);
-      DATA.cronometer.dailySummaries.push({ date: todayKey, kcal, protein, carbs: 0, fat: 0, fiber });
-      DATA.cronometer.dailySummaries.sort((a, b) => a.date.localeCompare(b.date));
-      persistData("Log manual macros");
-      render();
+    function clearCheckedGroceries() {
+      DATA.groceryChecked = {};
+      DATA.customGroceries = (DATA.customGroceries || []).filter((_, idx) => !DATA.groceryChecked[`custom_${idx}`]);
+      persistData("Clear checked groceries");
+      renderCategorizedGroceries(DATA.selectedMealId);
+    }
+
+    // Quick-log preset meal (Smoothie or Active 3-Day Sandwich) directly into today's food log!
+    function quickLogPreset(type) {
+      DATA.cronometer = DATA.cronometer || { dailySummaries: [], servingsByDate: {} };
+      DATA.cronometer.servingsByDate = DATA.cronometer.servingsByDate || {};
+      const list = DATA.cronometer.servingsByDate[selectedDiaryDate] || [];
+
+      if (type === "smoothie") {
+        const sm = CONFIG.smoothies?.[0] || { name: "Berry Greek-Yogurt Creatine Smoothie", kcal: 330, protein: 30, fiber: 8 };
+        list.push({ group: "Breakfast", name: sm.name, amount: "1 glass + 5g Creatine", kcal: sm.kcal, protein: sm.protein, carbs: 28, fat: 8, fiber: sm.fiber });
+      } else {
+        const m = (CONFIG.meals || []).find(x => x.id === DATA.selectedMealId) || CONFIG.meals?.[0];
+        if (m) {
+          list.push({ group: "Lunch / Dinner", name: m.name, amount: "1 His/Hers portion", kcal: m.kcal, protein: m.protein, carbs: m.carbs || 45, fat: m.fat || 14, fiber: m.fiber || 7 });
+        }
+      }
+      DATA.cronometer.servingsByDate[selectedDiaryDate] = list;
+      recalcSummaryFromServings(selectedDiaryDate);
+      persistData("Quick-log meal");
+      renderAll();
+    }
+
+    function removeDiaryItem(idx) {
+      const list = DATA.cronometer?.servingsByDate?.[selectedDiaryDate];
+      if (!list) return;
+      list.splice(idx, 1);
+      recalcSummaryFromServings(selectedDiaryDate);
+      persistData("Remove food log item");
+      renderAll();
+    }
+
+    function recalcSummaryFromServings(dt) {
+      const list = DATA.cronometer?.servingsByDate?.[dt] || [];
+      const totals = list.reduce((acc, x) => ({
+        kcal: acc.kcal + (x.kcal || 0),
+        protein: acc.protein + (x.protein || 0),
+        carbs: acc.carbs + (x.carbs || 0),
+        fat: acc.fat + (x.fat || 0),
+        fiber: acc.fiber + (x.fiber || 0)
+      }), { kcal: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 });
+
+      DATA.cronometer.dailySummaries = (DATA.cronometer.dailySummaries || []).filter(s => s.date !== dt);
+      if (list.length > 0) {
+        DATA.cronometer.dailySummaries.push({ date: dt, ...totals });
+        DATA.cronometer.dailySummaries.sort((a, b) => a.date.localeCompare(b.date));
+      }
+    }
+
+    function setDayMode(mode) {
+      DATA.days[todayIso].mode = mode;
+      persistData("Switch Green/Yellow protocol");
+      renderAll();
+    }
+
+    function toggleHabit(id) {
+      DATA.days[todayIso].checks[id] = !DATA.days[todayIso].checks[id];
+      persistData(`Toggle habit ${id}`);
+      renderAll();
+    }
+
+    function selectActiveMeal(id) {
+      DATA.selectedMealId = id;
+      persistData("Select 3-day meal");
+      renderAll();
+    }
+
+    // Guided 3-Minute Ignition Timer with WebAudio Beeps
+    function playBeep(freq = 880, duration = 0.18) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function initTimerReset() {
+      const seq = CONFIG?.ignitionSequence || [
+        { name: "Deep Squat Hold & Hip Pry", seconds: 60, cue: "Sink deep, pry knees out" },
+        { name: "World's Greatest Stretch", seconds: 60, cue: "5 reps/side thoracic rotation" },
+        { name: "Glute Bridges + Wall Slides", seconds: 60, cue: "10 bridges + 10 wall slides" }
+      ];
+      timerStepIdx = 0;
+      timerSecondsLeft = seq[0].seconds;
+      updateTimerUI();
+    }
+
+    function updateTimerUI() {
+      const seq = CONFIG?.ignitionSequence || [
+        { name: "Deep Squat Hold & Hip Pry", seconds: 60, cue: "Sink deep, pry knees out" },
+        { name: "World's Greatest Stretch", seconds: 60, cue: "5 reps/side thoracic rotation" },
+        { name: "Glute Bridges + Wall Slides", seconds: 60, cue: "10 bridges + 10 wall slides" }
+      ];
+      const step = seq[timerStepIdx] || seq[0];
+      document.getElementById("timerStepName").textContent = `${timerStepIdx + 1}/${seq.length} • ${step.name}`;
+      document.getElementById("timerStepCue").textContent = step.cue;
+      const m = String(Math.floor(timerSecondsLeft / 60)).padStart(2, "0");
+      const s = String(timerSecondsLeft % 60).padStart(2, "0");
+      document.getElementById("timerDisplay").textContent = `${m}:${s}`;
+    }
+
+    function toggleIgnitionTimer() {
+      const btn = document.getElementById("timerBtn");
+      const seq = CONFIG?.ignitionSequence || [
+        { name: "Deep Squat Hold & Hip Pry", seconds: 60, cue: "Sink deep, pry knees out" },
+        { name: "World's Greatest Stretch", seconds: 60, cue: "5 reps/side thoracic rotation" },
+        { name: "Glute Bridges + Wall Slides", seconds: 60, cue: "10 bridges + 10 wall slides" }
+      ];
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        btn.textContent = "▶ Resume";
+        return;
+      }
+      playBeep(660, 0.12);
+      btn.textContent = "⏸ Pause";
+      timerInterval = setInterval(() => {
+        timerSecondsLeft--;
+        if (timerSecondsLeft <= 0) {
+          timerStepIdx++;
+          if (timerStepIdx >= seq.length) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            playBeep(1046, 0.35);
+            btn.textContent = "✓ Done";
+            DATA.days[todayIso].checks["mobility"] = true;
+            persistData("Completed 3-Min Ignition");
+            renderAll();
+            setTimeout(initTimerReset, 2500);
+            return;
+          } else {
+            playBeep(880, 0.2);
+            timerSecondsLeft = seq[timerStepIdx].seconds;
+          }
+        }
+        updateTimerUI();
+      }, 1000);
+    }
+
+    // MacroFactor-style Exponential Moving Average (EMA) Weight Chart
+    function renderWeightChart() {
+      const weights = (DATA?.weights || []).slice().sort((a, b) => a.date.localeCompare(b.date));
+      const box = document.getElementById("weightChartBox");
+      const goal = CONFIG?.profile?.weightGoalLbs || 180.0;
+
+      if (weights.length === 0) {
+        box.innerHTML = `<div style="display:flex;height:100%;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.82rem;">Log your morning weight below to plot your trend line.</div>`;
+        return;
+      }
+
+      // Compute EMA Trend Weight (alpha = 0.25)
+      let ema = Number(weights[0].weight);
+      const pts = weights.map(w => {
+        const raw = Number(w.weight);
+        ema = +(0.25 * raw + 0.75 * ema).toFixed(1);
+        return { date: w.date, raw, trend: ema, source: w.source };
+      });
+
+      const latest = pts[pts.length - 1];
+      document.getElementById("statTrendWeight").textContent = `${latest.trend.toFixed(1)} lb`;
+      document.getElementById("statLatestWeight").textContent = `${latest.raw.toFixed(1)} lb`;
+      const diffGoal = (latest.trend - goal).toFixed(1);
+      document.getElementById("statToGoal").textContent = diffGoal > 0 ? `-${diffGoal} lb` : "GOAL HIT!";
+
+      // SVG Plot
+      const recent = pts.slice(-14);
+      const vals = recent.flatMap(p => [p.raw, p.trend]).concat([goal]);
+      const minW = Math.floor(Math.min(...vals) - 1);
+      const maxW = Math.ceil(Math.max(...vals) + 1);
+      const W = 560, H = 160, padL = 36, padR = 14, padT = 14, padB = 24;
+
+      const xFor = i => recent.length === 1 ? (W / 2) : padL + (i / (recent.length - 1)) * (W - padL - padR);
+      const yFor = v => padT + ((maxW - v) / Math.max(1, maxW - minW)) * (H - padT - padB);
+
+      const trendPoints = recent.map((p, i) => `${xFor(i).toFixed(1)},${yFor(p.trend).toFixed(1)}`).join(" ");
+      const goalY = yFor(goal).toFixed(1);
+
+      let circlesHtml = "";
+      recent.forEach((p, i) => {
+        const cx = xFor(i).toFixed(1);
+        const cy = yFor(p.raw).toFixed(1);
+        circlesHtml += `<circle cx="${cx}" cy="${cy}" r="3.5" fill="#9ca3af" opacity="0.65" />`;
+      });
+
+      box.innerHTML = `
+        <svg viewBox="0 0 ${W} ${H}" width="100%" height="100%">
+          <line x1="${padL}" y1="${goalY}" x2="${W - padR}" y2="${goalY}" stroke="rgba(182,255,51,0.3)" stroke-dasharray="4 4" stroke-width="1" />
+          <text x="${padL + 4}" y="${goalY - 4}" fill="#b6ff33" font-size="9" font-family="JetBrains Mono">GOAL ${goal}</text>
+          <text x="2" y="${padT + 6}" fill="#64748b" font-size="9" font-family="JetBrains Mono">${maxW}</text>
+          <text x="2" y="${H - padB}" fill="#64748b" font-size="9" font-family="JetBrains Mono">${minW}</text>
+          ${circlesHtml}
+          <polyline fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="${trendPoints}" />
+        </svg>`;
+
+      const histEl = document.getElementById("weightHistoryList");
+      histEl.innerHTML = "";
+      pts.slice().reverse().forEach(p => {
+        const row = document.createElement("div");
+        row.className = "diary-item";
+        row.innerHTML = `
+          <span class="mono" style="color:var(--text-secondary);">${p.date}</span>
+          <span class="mono">Scale: <strong>${p.raw.toFixed(1)}</strong> • <span style="color:var(--signal-sky);">Trend: ${p.trend.toFixed(1)} lb</span></span>`;
+        histEl.appendChild(row);
+      });
+    }
+
+    function logMorningWeight() {
+      const inp = document.getElementById("weightInput");
+      const val = parseFloat(inp.value);
+      if (!val || val < 100 || val > 350) return;
+      DATA.weights = (DATA.weights || []).filter(w => w.date !== todayIso);
+      DATA.weights.push({ date: todayIso, weight: val, source: "manual" });
+      DATA.weights.sort((a, b) => a.date.localeCompare(b.date));
+      inp.value = "";
+      persistData("Log morning weight");
+      renderAll();
+    }
+
+    function saveVisualTargets() {
+      CONFIG.profile = CONFIG.profile || {};
+      CONFIG.profile.calorieTarget = {
+        min: (parseInt(document.getElementById("cfgKcal").value, 10) || 2100) - 100,
+        max: (parseInt(document.getElementById("cfgKcal").value, 10) || 2100) + 100,
+        target: parseInt(document.getElementById("cfgKcal").value, 10) || 2100
+      };
+      CONFIG.profile.proteinTargetGrams = parseInt(document.getElementById("cfgProt").value, 10) || 145;
+      CONFIG.profile.fiberTargetGrams = parseInt(document.getElementById("cfgFiber").value, 10) || 32;
+      CONFIG.profile.weightGoalLbs = parseFloat(document.getElementById("cfgWeightGoal").value) || 180.0;
+      persistConfig("Update targets");
+      renderAll();
+      switchTab("today");
+    }
+
+    function addNewMealCard() {
+      const name = document.getElementById("newMealName").value.trim();
+      if (!name) return;
+      const kcal = parseInt(document.getElementById("newMealKcal").value, 10) || 520;
+      const protein = parseInt(document.getElementById("newMealProt").value, 10) || 48;
+      const fiber = parseInt(document.getElementById("newMealFib").value, 10) || 6;
+      const prepNote = document.getElementById("newMealPrep").value.trim();
+      const rawGroc = document.getElementById("newMealGroceries").value.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+      const groceries = rawGroc.map(line => {
+        if (line.toLowerCase().startsWith("costco:")) return { store: "Costco", item: line.slice(7).trim() };
+        if (line.toLowerCase().startsWith("aldi:")) return { store: "Aldi", item: line.slice(5).trim() };
+        return { store: "Aldi", item: line };
+      });
+      const id = "M" + Date.now().toString().slice(-4);
+      CONFIG.meals = CONFIG.meals || [];
+      CONFIG.meals.unshift({ id, name, category: "Custom 3-Day", kcal, protein, fiber, prepNote, groceries });
+      DATA.selectedMealId = id;
+      persistConfig("Add custom meal");
+      persistData("Select custom meal");
+      renderAll();
+      switchTab("kitchen");
     }
 
     function importCronometerCsv(event) {
@@ -724,8 +1581,32 @@
         if (lines.length < 2) return;
         const headers = lines[0].split(",").map(h => h.replace(/^"|"$/g, "").trim());
 
-        const isBiometrics = headers.includes("Metric") && (headers.includes("Amount") || headers.includes("Value"));
-        if (isBiometrics) {
+        if (headers.includes("Food Name")) {
+          DATA.cronometer = DATA.cronometer || { dailySummaries: [], servingsByDate: {} };
+          DATA.cronometer.servingsByDate = DATA.cronometer.servingsByDate || {};
+          const grouped = {};
+          for (let i = 1; i < lines.length; i++) {
+            const cols = lines[i].split(",").map(c => c.replace(/^"|"$/g, "").trim());
+            const row = {};
+            headers.forEach((h, idx) => row[h] = cols[idx]);
+            const dt = (row["Day"] || row["Date"] || "").slice(0, 10);
+            const fn = row["Food Name"];
+            if (!dt || !fn) continue;
+            grouped[dt] = grouped[dt] || [];
+            grouped[dt].push({
+              group: row["Group"] || "Logged",
+              name: fn,
+              amount: row["Amount"] || "",
+              kcal: parseFloat(row["Energy (kcal)"] || "0") || 0,
+              protein: parseFloat(row["Protein (g)"] || "0") || 0,
+              carbs: parseFloat(row["Carbs (g)"] || "0") || 0,
+              fat: parseFloat(row["Fat (g)"] || "0") || 0,
+              fiber: parseFloat(row["Fiber (g)"] || "0") || 0
+            });
+          }
+          Object.assign(DATA.cronometer.servingsByDate, grouped);
+          Object.keys(grouped).forEach(recalcSummaryFromServings);
+        } else if (headers.includes("Metric")) {
           const byDate = {};
           (DATA.weights || []).forEach(w => byDate[w.date] = w);
           for (let i = 1; i < lines.length; i++) {
@@ -749,34 +1630,38 @@
             headers.forEach((h, idx) => row[h] = cols[idx]);
             const dt = (row["Date"] || row["Day"] || "").slice(0, 10);
             const kcal = parseFloat(row["Energy (kcal)"] || row["Calories"] || "0") || 0;
-            const protein = parseFloat(row["Protein (g)"] || row["Protein"] || "0") || 0;
-            const fiber = parseFloat(row["Fiber (g)"] || row["Fiber"] || "0") || 0;
+            const protein = parseFloat(row["Protein (g)"] || "0") || 0;
+            const fiber = parseFloat(row["Fiber (g)"] || "0") || 0;
             const carbs = parseFloat(row["Carbs (g)"] || "0") || 0;
             const fat = parseFloat(row["Fat (g)"] || "0") || 0;
             if (dt && (kcal > 0 || protein > 0)) byDate[dt] = { date: dt, kcal, protein, carbs, fat, fiber };
           }
           DATA.cronometer = DATA.cronometer || {};
-          DATA.cronometer.dailySummaries = Object.values(byDate).sort((a, b) => a.date.localeCompare(b.date)).slice(-60);
-          DATA.cronometer.lastSync = new Date().toISOString();
+          DATA.cronometer.dailySummaries = Object.values(byDate).sort((a, b) => a.date.localeCompare(b.date));
         }
+        DATA.cronometer.lastSync = new Date().toISOString();
         persistData("Import Cronometer CSV");
-        render();
+        renderAll();
+        switchTab("today");
       };
       reader.readAsText(file);
     }
 
-    function openConfigModal() {
-      document.getElementById("configEditorText").value = JSON.stringify(CONFIG, null, 2);
-      document.getElementById("configModal").classList.remove("hidden");
-    }
-    function closeConfigModal() { document.getElementById("configModal").classList.add("hidden"); }
-    function saveConfigFromModal() {
-      try {
-        CONFIG = JSON.parse(document.getElementById("configEditorText").value);
-        persistConfig("Update config.json from UI");
-        closeConfigModal();
-        render();
-      } catch (e) { alert("Invalid JSON: " + e.message); }
+    async function promptChangePassword() {
+      if (!GH_AUTH) return;
+      const newUser = prompt("Enter your desired Username:", "gabzsi");
+      if (!newUser) return;
+      const newPass = prompt("Enter your new Password:");
+      if (!newPass) return;
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const key = await deriveKey(newUser, newPass, salt);
+      const plain = new TextEncoder().encode(JSON.stringify({ repo: GH_AUTH.repo, token: GH_AUTH.token }));
+      const cipher = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, plain);
+      localStorage.setItem("gethealthy_encrypted_vault", JSON.stringify({
+        salt: bufToB64(salt), iv: bufToB64(iv), data: bufToB64(cipher)
+      }));
+      alert("Password updated on this device!");
     }
   </script>
 </body>
