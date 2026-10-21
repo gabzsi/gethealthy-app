@@ -32,7 +32,6 @@
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
       font-family: var(--font-sans);
@@ -45,7 +44,6 @@
     }
     .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
     .hidden { display: none !important; }
-
     /* LOGIN VIEW */
     .auth-shell {
       min-height: 100vh;
@@ -82,7 +80,6 @@
       background: var(--signal-lime);
       box-shadow: 0 0 10px var(--signal-lime);
     }
-
     /* INPUTS & BUTTONS */
     .field { margin-bottom: 14px; }
     .field label {
@@ -140,7 +137,6 @@
       cursor: pointer;
     }
     .btn-ghost:hover { border-color: var(--border-strong); }
-
     /* APP SHELL & TOP HEADER */
     .app-container {
       max-width: 680px;
@@ -181,7 +177,6 @@
       font-size: 0.78rem;
       font-weight: 700;
     }
-
     /* MODULE PANELS */
     .panel {
       background: var(--bg-surface);
@@ -209,7 +204,6 @@
       font-weight: 700;
       letter-spacing: -0.01em;
     }
-
     /* TELEMETRY RINGS & MACRO BAR */
     .telemetry-hero {
       display: grid;
@@ -268,7 +262,6 @@
       border-radius: 99px;
       transition: width 0.35s ease;
     }
-
     /* CRONOMETER FOOD DIARY LIST */
     .diary-group-title {
       font-family: var(--font-mono);
@@ -298,7 +291,6 @@
       white-space: nowrap;
       margin-left: 10px;
     }
-
     /* GREEN VS YELLOW PROTOCOL SWITCHER */
     .protocol-toggle {
       display: grid;
@@ -347,7 +339,6 @@
       color: var(--text-primary);
     }
     .proto-btn.active-yellow .p-title { color: var(--signal-amber); }
-
     /* GUIDED TIMER WIDGET */
     .timer-box {
       background: var(--bg-canvas);
@@ -376,7 +367,6 @@
       font-size: 0.76rem;
       color: var(--text-secondary);
     }
-
     /* CHECKLIST ROWS */
     .habit-row {
       display: flex;
@@ -413,7 +403,6 @@
       color: #08090c;
       font-weight: 800;
     }
-
     /* SANDWICH & RECIPE CARDS */
     .recipe-card {
       background: var(--bg-canvas);
@@ -438,7 +427,6 @@
       color: var(--text-secondary);
       text-transform: uppercase;
     }
-
     /* BOTTOM TAB BAR */
     .bottom-nav {
       position: fixed;
@@ -476,7 +464,6 @@
       color: var(--signal-lime);
       background: rgba(182, 255, 51, 0.08);
     }
-
     /* WEIGHT CHART */
     .chart-box {
       width: 100%;
@@ -514,7 +501,6 @@
   </style>
 </head>
 <body>
-
   <!-- ================= AUTHENTICATION VIEW ================= -->
   <div id="authView" class="auth-shell">
     <div class="auth-card">
@@ -523,7 +509,6 @@
       <p style="font-size:0.83rem; color:var(--text-secondary); margin-bottom:20px;">
         Sign in to decrypt your private repository connection and load your live Cronometer diary, 5:00 AM protocol, and 3-day kitchen rotation.
       </p>
-
       <form onsubmit="event.preventDefault(); loginWithPassword();">
         <div class="field">
           <label for="loginUser">Username</label>
@@ -535,11 +520,9 @@
         </div>
         <button type="submit" class="btn-primary" style="width:100%; margin-top:4px;">Unlock Telemetry</button>
       </form>
-
       <div id="loginStatus" style="margin-top:12px; font-size:0.8rem; color:var(--signal-amber);"></div>
     </div>
   </div>
-
   <!-- ================= MAIN APPLICATION SHELL ================= -->
   <div id="mainApp" class="hidden">
     <div class="app-container">
@@ -555,7 +538,6 @@
           <button class="btn-ghost" onclick="logout()" aria-label="Sign Out">🔒</button>
         </div>
       </header>
-
       <!-- TAB 1: TODAY (CRONOMETER LIVE DIARY + 5:00 AM WORKOUT) -->
       <section id="tab-today">
         <!-- NUTRITION TELEMETRY PANEL -->
@@ -572,7 +554,6 @@
               </button>
             </div>
           </div>
-
           <div class="telemetry-hero">
             <div class="ring-wrap">
               <svg width="120" height="120" viewBox="0 0 120 120">
@@ -586,7 +567,6 @@
                 <div class="kcal-lbl" id="kcalRingSub">Remaining</div>
               </div>
             </div>
-
             <div class="macro-stack">
               <div>
                 <div class="macro-row-top">
@@ -597,7 +577,6 @@
                   <div class="macro-bar-fill" id="protBar" style="width:0%; background:var(--signal-sky);"></div>
                 </div>
               </div>
-
               <div>
                 <div class="macro-row-top">
                   <span style="font-weight:600; color:var(--signal-emerald);">Dietary Fiber (LDL)</span>
@@ -607,7 +586,6 @@
                   <div class="macro-bar-fill" id="fibBar" style="width:0%; background:var(--signal-emerald);"></div>
                 </div>
               </div>
-
               <div>
                 <div class="macro-row-top">
                   <span style="font-weight:600; color:var(--signal-amber);">Carbs / Fat</span>
@@ -619,7 +597,6 @@
               </div>
             </div>
           </div>
-
           <!-- QUICK ADD FROM ROTATION OR CRONOMETER SERVINGS -->
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
             <span class="panel-kicker" id="foodLogHeader">TODAY'S FOOD LOG</span>
@@ -628,11 +605,9 @@
               <button class="btn-ghost" style="padding:4px 8px; font-size:0.72rem;" onclick="quickLogPreset('sandwich')">+ 3-Day Sandwich</button>
             </div>
           </div>
-
           <div id="foodDiaryList"></div>
           <div id="syncStatusNote" style="font-size:0.74rem; color:var(--text-muted); margin-top:8px;"></div>
         </div>
-
         <!-- 5:00 AM TRAINING PROTOCOL & LIVE GUIDED TIMER -->
         <div class="panel">
           <div class="panel-header">
@@ -642,7 +617,6 @@
             </div>
             <span class="tag" id="workoutDurationTag">28 MIN</span>
           </div>
-
           <div class="protocol-toggle">
             <button class="proto-btn active-green" id="btnProtoGreen" onclick="setDayMode('green')">
               <div class="p-title"><span>●</span> Green Protocol</div>
@@ -653,27 +627,26 @@
               <div class="p-sub">Rough newborn night • 10m win</div>
             </button>
           </div>
-
           <p id="workoutSummaryText" style="font-size:0.84rem; color:var(--text-secondary); margin-bottom:14px;"></p>
-
-          <!-- INTERACTIVE GUIDED 3-MIN IGNITION TIMER -->
-          <div class="timer-box">
-            <div>
-              <div class="panel-kicker" style="color:var(--signal-lime);">GUIDED 3-MIN IGNITION TIMER</div>
-              <div class="timer-step-name" id="timerStepName">1. Deep Squat Hold &amp; Hip Pry</div>
-              <div class="timer-step-cue" id="timerStepCue">Hold doorframe/elliptical, sink deep, pry knees out</div>
+          <!-- WORKOUT TRACKER (CaliMove runs in its own app; log which workout you completed here) -->
+          <div style="background:var(--bg-canvas); border:1px solid var(--border-strong); border-radius:var(--radius-md); padding:13px; margin-bottom:14px;">
+            <div class="panel-kicker" style="color:var(--signal-lime); margin-bottom:8px;">LOG COMPLETED WORKOUT</div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-bottom:8px;">
+              <select id="workoutTypeSelect">
+                <option value="CaliMove Bodyweight">CaliMove Bodyweight</option>
+                <option value="Zone 2 Elliptical">Zone 2 Elliptical</option>
+                <option value="Run / Walk Intervals">Run / Walk Intervals</option>
+                <option value="10m Survival Floor">10m Survival Floor</option>
+              </select>
+              <input type="text" id="workoutDetailInput" placeholder="e.g. Level 1 Wk 1 Session A / 30m" />
             </div>
-            <div style="text-align:right;">
-              <div class="timer-digits" id="timerDisplay">01:00</div>
-              <button class="btn-primary" id="timerBtn" style="margin-top:6px; padding:6px 12px; font-size:0.76rem;" onclick="toggleIgnitionTimer()">▶ Start</button>
-            </div>
+            <button class="btn-primary" style="width:100%; padding:9px;" onclick="logWorkoutSession()">Log Completed Workout</button>
+            <div id="recentWorkoutsLog" style="margin-top:10px;"></div>
           </div>
-
           <!-- DAILY HABIT CHECKLIST -->
           <div id="habitsList"></div>
         </div>
       </section>
-
       <!-- TAB 2: TRENDS (MACROFACTOR-STYLE WEIGHT GRAPH + RUNNING BRIDGE) -->
       <section id="tab-trends" class="hidden">
         <div class="panel">
@@ -684,7 +657,6 @@
             </div>
             <span class="tag" style="color:var(--signal-lime);">GOAL: 180.0 LB</span>
           </div>
-
           <div class="stat-strip">
             <div class="stat-cell">
               <div class="s-lbl">Trend Weight</div>
@@ -699,18 +671,14 @@
               <div class="s-val" id="statToGoal" style="color:var(--signal-lime);">—</div>
             </div>
           </div>
-
           <!-- SVG SMOOTH TREND CHART -->
           <div class="chart-box" id="weightChartBox"></div>
-
           <div style="display:flex; gap:8px; margin-bottom:14px;">
             <input type="number" step="0.1" id="weightInput" class="mono" placeholder="Log morning weight (lbs)..." />
             <button class="btn-primary" onclick="logMorningWeight()">Log Weight</button>
           </div>
-
           <div id="weightHistoryList" style="max-height:180px; overflow-y:auto;"></div>
         </div>
-
         <div class="panel">
           <div class="panel-header">
             <div>
@@ -721,7 +689,6 @@
           <div id="runningBridgeContainer"></div>
         </div>
       </section>
-
       <!-- TAB 3: KITCHEN (3-DAY HIS & HERS SANDWICH BAR + ALDI/COSTCO LIST) -->
       <section id="tab-kitchen" class="hidden">
         <div class="panel">
@@ -736,7 +703,6 @@
           </p>
           <div id="recipesList"></div>
         </div>
-
         <div class="panel">
           <div class="panel-header">
             <div>
@@ -745,15 +711,12 @@
             </div>
             <button class="btn-ghost" style="font-size:0.72rem;" onclick="clearCheckedGroceries()">Clear Checked</button>
           </div>
-
           <div style="display:flex; gap:8px; margin-bottom:14px;">
             <input type="text" id="customGroceryInput" placeholder="Add item for you or your wife (e.g. Avocados, Diapers)..." />
             <button class="btn-primary" onclick="addCustomGrocery()">Add</button>
           </div>
-
           <div id="groceryByStore"></div>
         </div>
-
         <div class="panel">
           <div class="panel-header">
             <div>
@@ -764,7 +727,6 @@
           <div id="smoothiesList"></div>
         </div>
       </section>
-
       <!-- TAB 4: STUDIO (VISUAL SETTINGS & CRONOMETER SYNC SETUP) -->
       <section id="tab-studio" class="hidden">
         <div class="panel">
@@ -794,7 +756,6 @@
           </div>
           <button class="btn-primary" style="width:100%;" onclick="saveVisualTargets()">Save Targets to Vault</button>
         </div>
-
         <div class="panel">
           <div class="panel-header">
             <div>
@@ -821,7 +782,6 @@
           </div>
           <button class="btn-primary" style="width:100%;" onclick="addNewMealCard()">Add to Rotation</button>
         </div>
-
         <div class="panel">
           <div class="panel-header">
             <div>
@@ -837,7 +797,6 @@
         </div>
       </section>
     </div>
-
     <!-- BOTTOM MOBILE NAVIGATION -->
     <nav class="bottom-nav" aria-label="Primary Navigation">
       <button class="nav-tab active" id="nav-today" onclick="switchTab('today')">
@@ -858,23 +817,18 @@
       </button>
     </nav>
   </div>
-
   <script>
     const PRECONFIGURED_VAULT = {"salt": "GG8WqAf1smGnOuG98VVj7w==", "iv": "3lYBi3tZROlT7ohA", "data": "bLrNzMG9zfsirAodgoh8cbfAOUejWLp7+d7QU4MkQD+07VVdGZ63Y8zAu+KdVOnGDuUgL/2WPbJOZ1cEdhqBScNI1b6nlHs3Z2wJBdfLLUf1vDO9paeaK+C0xgg2u1damAPcVhjGQalVlg=="};
-
     let CONFIG = null;
     let DATA = null;
     let GH_AUTH = null;
-
     const todayIso = new Date().toISOString().slice(0, 10);
     let selectedDiaryDate = todayIso;
     const dayName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][new Date().getDay()];
-
     // Guided Timer State
     let timerInterval = null;
     let timerStepIdx = 0;
     let timerSecondsLeft = 60;
-
     async function deriveKey(username, password, saltBytes) {
       const enc = new TextEncoder();
       const keyMaterial = await crypto.subtle.importKey(
@@ -892,16 +846,13 @@
         ["encrypt", "decrypt"]
       );
     }
-
     function bufToB64(buf) { return btoa(String.fromCharCode(...new Uint8Array(buf))); }
     function b64ToBuf(b64) { return Uint8Array.from(atob(b64), c => c.charCodeAt(0)); }
-
     async function loginWithPassword() {
       const user = document.getElementById("loginUser").value.trim();
       const pass = document.getElementById("loginPass").value;
       const status = document.getElementById("loginStatus");
       const rawVault = localStorage.getItem("gethealthy_encrypted_vault") || (PRECONFIGURED_VAULT ? JSON.stringify(PRECONFIGURED_VAULT) : null);
-
       if (!rawVault) {
         status.textContent = "Vault not initialized.";
         return;
@@ -912,7 +863,6 @@
         const key = await deriveKey(user, pass, b64ToBuf(v.salt));
         const decBuf = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64ToBuf(v.iv) }, key, b64ToBuf(v.data));
         const { repo, token } = JSON.parse(new TextDecoder().decode(decBuf));
-
         const [cfgRes, datRes] = await Promise.all([
           ghFetchFile(repo, token, "config.json"),
           ghFetchFile(repo, token, "data.json")
@@ -921,7 +871,6 @@
         DATA = datRes.data;
         GH_AUTH = { repo, token, configSha: cfgRes.sha, dataSha: datRes.sha };
         sessionStorage.setItem("gethealthy_session", JSON.stringify({ repo, token }));
-
         document.getElementById("authView").classList.add("hidden");
         document.getElementById("mainApp").classList.remove("hidden");
         document.getElementById("diaryDatePicker").value = selectedDiaryDate;
@@ -931,7 +880,6 @@
         status.textContent = "Invalid credentials or connection error.";
       }
     }
-
     window.addEventListener("DOMContentLoaded", async () => {
       const sess = sessionStorage.getItem("gethealthy_session");
       if (sess) {
@@ -952,7 +900,6 @@
         } catch (e) {}
       }
     });
-
     async function ghFetchFile(repo, token, path) {
       const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}?t=${Date.now()}`, {
         headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github+json" }
@@ -962,7 +909,6 @@
       const content = new TextDecoder().decode(Uint8Array.from(atob(json.content.replace(/\n/g, "")), c => c.charCodeAt(0)));
       return { data: JSON.parse(content), sha: json.sha };
     }
-
     async function ghSaveFile(repo, token, path, obj, sha, message) {
       const bytes = new TextEncoder().encode(JSON.stringify(obj, null, 2));
       let bin = "";
@@ -980,28 +926,24 @@
       const out = await res.json();
       return out.content.sha;
     }
-
     async function persistData(msg = "Update telemetry data") {
       if (!GH_AUTH) return;
       try {
         GH_AUTH.dataSha = await ghSaveFile(GH_AUTH.repo, GH_AUTH.token, "data.json", DATA, GH_AUTH.dataSha, msg);
       } catch (e) { console.error(e); }
     }
-
     async function persistConfig(msg = "Update configuration") {
       if (!GH_AUTH) return;
       try {
         GH_AUTH.configSha = await ghSaveFile(GH_AUTH.repo, GH_AUTH.token, "config.json", CONFIG, GH_AUTH.configSha, msg);
       } catch (e) { console.error(e); }
     }
-
     function logout() {
       sessionStorage.removeItem("gethealthy_session");
       GH_AUTH = null;
       document.getElementById("mainApp").classList.add("hidden");
       document.getElementById("authView").classList.remove("hidden");
     }
-
     function switchTab(tabId) {
       ["today", "trends", "kitchen", "studio"].forEach(t => {
         document.getElementById(`tab-${t}`).classList.toggle("hidden", t !== tabId);
@@ -1009,13 +951,11 @@
       });
       if (tabId === "trends") renderWeightChart();
     }
-
     function changeDiaryDate(val) {
       if (!val) return;
       selectedDiaryDate = val;
       renderAll();
     }
-
     // Trigger GitHub Action workflow_dispatch directly from phone to pull Cronometer live!
     async function triggerCronometerCloudSync() {
       if (!GH_AUTH) return;
@@ -1051,18 +991,15 @@
         note.textContent = "Error triggering sync: " + e.message;
       }
     }
-
     function renderAll() {
       if (!CONFIG || !DATA) return;
       DATA.days = DATA.days || {};
       if (!DATA.days[todayIso]) DATA.days[todayIso] = { mode: "green", checks: {} };
       const todayObj = DATA.days[todayIso];
       const prof = CONFIG.profile || {};
-
       // Header
       document.getElementById("headerDate").textContent = `${dayName.toUpperCase()} // ${todayIso}`;
       document.getElementById("headerTitle").textContent = prof.title || "PULSE // ATHLETIC";
-
       // Streak
       let streak = 0;
       Object.keys(DATA.days).sort().reverse().forEach(d => {
@@ -1070,18 +1007,15 @@
         if (Object.values(c).some(Boolean)) streak++;
       });
       document.getElementById("streakNum").textContent = streak;
-
       // 1. Nutrition Telemetry & Cronometer Food Log for selectedDiaryDate
       const kcalTarget = prof.calorieTarget?.target || 2100;
       const protTarget = prof.proteinTargetGrams || 145;
       const fibTarget = prof.fiberTargetGrams || 32;
       const carbsTarget = prof.carbsTargetGrams || 195;
-
       const summaries = DATA.cronometer?.dailySummaries || [];
       const servingsMap = DATA.cronometer?.servingsByDate || {};
       const dayServings = servingsMap[selectedDiaryDate] || [];
       let daySummary = summaries.find(s => s.date === selectedDiaryDate);
-
       // If no summary row exists but servings exist, sum the servings!
       if (!daySummary && dayServings.length > 0) {
         daySummary = dayServings.reduce((acc, item) => ({
@@ -1092,38 +1026,30 @@
           fiber: acc.fiber + (item.fiber || 0)
         }), { kcal: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 });
       }
-
       const kcalEaten = Math.round(daySummary?.kcal || 0);
       const protEaten = Math.round(daySummary?.protein || 0);
       const fibEaten = Math.round(daySummary?.fiber || 0);
       const carbsEaten = Math.round(daySummary?.carbs || 0);
       const fatEaten = Math.round(daySummary?.fat || 0);
-
       const kcalRem = kcalTarget - kcalEaten;
       document.getElementById("kcalRemainingVal").textContent = Math.abs(kcalRem);
       document.getElementById("kcalRingSub").textContent = kcalRem >= 0 ? `Left of ${kcalTarget}` : `Over ${kcalTarget}`;
-
       const pctKcal = Math.min(1, kcalEaten / kcalTarget);
       const circumference = 314.16;
       const arc = document.getElementById("kcalRingArc");
       arc.style.strokeDashoffset = (circumference * (1 - pctKcal)).toFixed(2);
       arc.setAttribute("stroke", kcalRem >= 0 ? "#b6ff33" : "#ff5a36");
-
       document.getElementById("protText").textContent = `${protEaten} / ${protTarget}g`;
       document.getElementById("protBar").style.width = `${Math.min(100, (protEaten / protTarget) * 100)}%`;
-
       document.getElementById("fibText").textContent = `${fibEaten} / ${fibTarget}g`;
       document.getElementById("fibBar").style.width = `${Math.min(100, (fibEaten / fibTarget) * 100)}%`;
-
       document.getElementById("carbFatText").textContent = `${carbsEaten}g C • ${fatEaten}g F`;
       document.getElementById("carbBar").style.width = `${Math.min(100, (carbsEaten / carbsTarget) * 100)}%`;
-
       // Food Diary Items
       document.getElementById("foodLogHeader").textContent =
         selectedDiaryDate === todayIso ? `TODAY'S FOOD LOG (${kcalEaten} KCAL)` : `FOOD LOG // ${selectedDiaryDate} (${kcalEaten} KCAL)`;
       const diaryContainer = document.getElementById("foodDiaryList");
       diaryContainer.innerHTML = "";
-
       if (dayServings.length === 0) {
         diaryContainer.innerHTML = `
           <div class="diary-item" style="justify-content:center; color:var(--text-muted); padding:16px;">
@@ -1148,10 +1074,8 @@
           diaryContainer.appendChild(row);
         });
       }
-
       document.getElementById("syncStatusNote").textContent =
         DATA.cronometer?.lastSync ? `Last Cronometer sync: ${DATA.cronometer.lastSync.replace("T", " ").slice(0, 16)}` : "";
-
       // 2. 5:00 AM Workout Section
       const sched = (CONFIG.weeklySchedule && CONFIG.weeklySchedule[dayName]) || {
         focus: "Morning Training", greenDurationMin: 28, yellowDurationMin: 10, green: "", yellow: ""
@@ -1162,7 +1086,6 @@
       document.getElementById("btnProtoGreen").className = "proto-btn " + (isGreen ? "active-green" : "");
       document.getElementById("btnProtoYellow").className = "proto-btn " + (!isGreen ? "active-yellow" : "");
       document.getElementById("workoutSummaryText").textContent = isGreen ? sched.green : sched.yellow;
-
       // Habits
       const habitsEl = document.getElementById("habitsList");
       habitsEl.innerHTML = "";
@@ -1172,7 +1095,7 @@
         div.className = "habit-row" + (done ? " done" : "");
         div.onclick = () => toggleHabit(h.id);
         div.innerHTML = `
-          <div class="habit-check">✓</div>
+          <div class="habit-check">&#10003;</div>
           <div>
             <div style="font-weight:600; font-size:0.88rem;">${h.title}</div>
             <div style="font-size:0.76rem; color:var(--text-secondary);">${h.desc}</div>
@@ -1180,11 +1103,29 @@
         habitsEl.appendChild(div);
       });
 
+      // Recent Logged Workouts
+      const wLogEl = document.getElementById("recentWorkoutsLog");
+      if (wLogEl) {
+        wLogEl.innerHTML = "";
+        const wLogs = (DATA.workoutLogs || []).slice(-5).reverse();
+        wLogs.forEach(wl => {
+          const item = document.createElement("div");
+          item.className = "diary-item";
+          item.style.marginBottom = "4px";
+          item.innerHTML = `
+            <div>
+              <div class="diary-item-name">${wl.type}</div>
+              <div class="diary-item-sub">${wl.detail || "Completed"}</div>
+            </div>
+            <span class="mono" style="font-size:0.75rem; color:var(--signal-emerald);">${wl.date}</span>`;
+          wLogEl.appendChild(item);
+        });
+      }
+
       // 3. Kitchen Tab (3-Day Sandwiches & Categorized Groceries)
       const recipesEl = document.getElementById("recipesList");
       recipesEl.innerHTML = "";
       const activeMealId = DATA.selectedMealId || (CONFIG.meals?.[0]?.id);
-
       (CONFIG.meals || []).forEach(m => {
         const isSel = m.id === activeMealId;
         const card = document.createElement("div");
@@ -1206,9 +1147,7 @@
           </button>`;
         recipesEl.appendChild(card);
       });
-
       renderCategorizedGroceries(activeMealId);
-
       // Smoothies
       const smEl = document.getElementById("smoothiesList");
       smEl.innerHTML = "";
@@ -1223,13 +1162,11 @@
           <div style="font-size:0.78rem; color:var(--text-secondary);">${sm.recipe}</div>`;
         smEl.appendChild(div);
       });
-
       // 4. Studio Tab Inputs
       document.getElementById("cfgKcal").value = kcalTarget;
       document.getElementById("cfgProt").value = protTarget;
       document.getElementById("cfgFiber").value = fibTarget;
       document.getElementById("cfgWeightGoal").value = prof.weightGoalLbs || 180.0;
-
       // Running Bridge
       const rbEl = document.getElementById("runningBridgeContainer");
       rbEl.innerHTML = "";
@@ -1245,17 +1182,14 @@
           <div style="font-size:0.78rem; color:var(--text-secondary);">${rb.protocol}</div>`;
         rbEl.appendChild(div);
       });
-
       renderWeightChart();
     }
-
     function renderCategorizedGroceries(activeMealId) {
       const container = document.getElementById("groceryByStore");
       container.innerHTML = "";
       const activeMeal = (CONFIG.meals || []).find(m => m.id === activeMealId) || CONFIG.meals?.[0];
       DATA.groceryChecked = DATA.groceryChecked || {};
       DATA.customGroceries = DATA.customGroceries || [];
-
       const groups = { Costco: [], Aldi: [], Custom: [] };
       if (activeMeal && activeMeal.groceries) {
         activeMeal.groceries.forEach((g, idx) => {
@@ -1267,14 +1201,12 @@
       DATA.customGroceries.forEach((txt, idx) => {
         groups.Custom.push({ key: `custom_${idx}`, text: txt, isCustom: true, idx });
       });
-
       ["Costco", "Aldi", "Custom"].forEach(store => {
         if (groups[store].length === 0) return;
         const h = document.createElement("div");
         h.className = "diary-group-title";
         h.textContent = `${store.toUpperCase()} AISLE (${groups[store].length})`;
         container.appendChild(h);
-
         groups[store].forEach(entry => {
           const done = !!DATA.groceryChecked[entry.key];
           const row = document.createElement("div");
@@ -1292,7 +1224,6 @@
         });
       });
     }
-
     function addCustomGrocery() {
       const inp = document.getElementById("customGroceryInput");
       const val = inp.value.trim();
@@ -1303,20 +1234,17 @@
       persistData("Add custom grocery item");
       renderCategorizedGroceries(DATA.selectedMealId);
     }
-
     function clearCheckedGroceries() {
       DATA.groceryChecked = {};
       DATA.customGroceries = (DATA.customGroceries || []).filter((_, idx) => !DATA.groceryChecked[`custom_${idx}`]);
       persistData("Clear checked groceries");
       renderCategorizedGroceries(DATA.selectedMealId);
     }
-
     // Quick-log preset meal (Smoothie or Active 3-Day Sandwich) directly into today's food log!
     function quickLogPreset(type) {
       DATA.cronometer = DATA.cronometer || { dailySummaries: [], servingsByDate: {} };
       DATA.cronometer.servingsByDate = DATA.cronometer.servingsByDate || {};
       const list = DATA.cronometer.servingsByDate[selectedDiaryDate] || [];
-
       if (type === "smoothie") {
         const sm = CONFIG.smoothies?.[0] || { name: "Berry Greek-Yogurt Creatine Smoothie", kcal: 330, protein: 30, fiber: 8 };
         list.push({ group: "Breakfast", name: sm.name, amount: "1 glass + 5g Creatine", kcal: sm.kcal, protein: sm.protein, carbs: 28, fat: 8, fiber: sm.fiber });
@@ -1331,7 +1259,6 @@
       persistData("Quick-log meal");
       renderAll();
     }
-
     function removeDiaryItem(idx) {
       const list = DATA.cronometer?.servingsByDate?.[selectedDiaryDate];
       if (!list) return;
@@ -1340,7 +1267,6 @@
       persistData("Remove food log item");
       renderAll();
     }
-
     function recalcSummaryFromServings(dt) {
       const list = DATA.cronometer?.servingsByDate?.[dt] || [];
       const totals = list.reduce((acc, x) => ({
@@ -1350,108 +1276,44 @@
         fat: acc.fat + (x.fat || 0),
         fiber: acc.fiber + (x.fiber || 0)
       }), { kcal: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 });
-
       DATA.cronometer.dailySummaries = (DATA.cronometer.dailySummaries || []).filter(s => s.date !== dt);
       if (list.length > 0) {
         DATA.cronometer.dailySummaries.push({ date: dt, ...totals });
         DATA.cronometer.dailySummaries.sort((a, b) => a.date.localeCompare(b.date));
       }
     }
-
     function setDayMode(mode) {
       DATA.days[todayIso].mode = mode;
       persistData("Switch Green/Yellow protocol");
       renderAll();
     }
-
     function toggleHabit(id) {
       DATA.days[todayIso].checks[id] = !DATA.days[todayIso].checks[id];
       persistData(`Toggle habit ${id}`);
       renderAll();
     }
-
     function selectActiveMeal(id) {
       DATA.selectedMealId = id;
       persistData("Select 3-day meal");
       renderAll();
     }
+    function initTimerReset() {}
 
-    // Guided 3-Minute Ignition Timer with WebAudio Beeps
-    function playBeep(freq = 880, duration = 0.18) {
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.frequency.value = freq;
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
-        osc.stop(ctx.currentTime + duration);
-      } catch (e) {}
-    }
-
-    function initTimerReset() {
-      const seq = CONFIG?.ignitionSequence || [
-        { name: "Deep Squat Hold & Hip Pry", seconds: 60, cue: "Sink deep, pry knees out" },
-        { name: "World's Greatest Stretch", seconds: 60, cue: "5 reps/side thoracic rotation" },
-        { name: "Glute Bridges + Wall Slides", seconds: 60, cue: "10 bridges + 10 wall slides" }
-      ];
-      timerStepIdx = 0;
-      timerSecondsLeft = seq[0].seconds;
-      updateTimerUI();
-    }
-
-    function updateTimerUI() {
-      const seq = CONFIG?.ignitionSequence || [
-        { name: "Deep Squat Hold & Hip Pry", seconds: 60, cue: "Sink deep, pry knees out" },
-        { name: "World's Greatest Stretch", seconds: 60, cue: "5 reps/side thoracic rotation" },
-        { name: "Glute Bridges + Wall Slides", seconds: 60, cue: "10 bridges + 10 wall slides" }
-      ];
-      const step = seq[timerStepIdx] || seq[0];
-      document.getElementById("timerStepName").textContent = `${timerStepIdx + 1}/${seq.length} • ${step.name}`;
-      document.getElementById("timerStepCue").textContent = step.cue;
-      const m = String(Math.floor(timerSecondsLeft / 60)).padStart(2, "0");
-      const s = String(timerSecondsLeft % 60).padStart(2, "0");
-      document.getElementById("timerDisplay").textContent = `${m}:${s}`;
-    }
-
-    function toggleIgnitionTimer() {
-      const btn = document.getElementById("timerBtn");
-      const seq = CONFIG?.ignitionSequence || [
-        { name: "Deep Squat Hold & Hip Pry", seconds: 60, cue: "Sink deep, pry knees out" },
-        { name: "World's Greatest Stretch", seconds: 60, cue: "5 reps/side thoracic rotation" },
-        { name: "Glute Bridges + Wall Slides", seconds: 60, cue: "10 bridges + 10 wall slides" }
-      ];
-      if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
-        btn.textContent = "▶ Resume";
-        return;
-      }
-      playBeep(660, 0.12);
-      btn.textContent = "⏸ Pause";
-      timerInterval = setInterval(() => {
-        timerSecondsLeft--;
-        if (timerSecondsLeft <= 0) {
-          timerStepIdx++;
-          if (timerStepIdx >= seq.length) {
-            clearInterval(timerInterval);
-            timerInterval = null;
-            playBeep(1046, 0.35);
-            btn.textContent = "✓ Done";
-            DATA.days[todayIso].checks["mobility"] = true;
-            persistData("Completed 3-Min Ignition");
-            renderAll();
-            setTimeout(initTimerReset, 2500);
-            return;
-          } else {
-            playBeep(880, 0.2);
-            timerSecondsLeft = seq[timerStepIdx].seconds;
-          }
-        }
-        updateTimerUI();
-      }, 1000);
+    function logWorkoutSession() {
+      const type = document.getElementById("workoutTypeSelect").value;
+      const detail = document.getElementById("workoutDetailInput").value.trim();
+      DATA.workoutLogs = DATA.workoutLogs || [];
+      DATA.workoutLogs = DATA.workoutLogs.filter(w => !(w.date === todayIso && w.type === type));
+      DATA.workoutLogs.push({
+        date: todayIso,
+        type,
+        detail: detail || (DATA.days[todayIso]?.mode === "yellow" ? "10m Survival Floor" : "Full Green Session"),
+        mode: DATA.days[todayIso]?.mode || "green"
+      });
+      DATA.days[todayIso].checks["workout"] = true;
+      document.getElementById("workoutDetailInput").value = "";
+      persistData(`Logged workout: ${type}`);
+      renderAll();
     }
 
     // MacroFactor-style Exponential Moving Average (EMA) Weight Chart
@@ -1459,12 +1321,10 @@
       const weights = (DATA?.weights || []).slice().sort((a, b) => a.date.localeCompare(b.date));
       const box = document.getElementById("weightChartBox");
       const goal = CONFIG?.profile?.weightGoalLbs || 180.0;
-
       if (weights.length === 0) {
         box.innerHTML = `<div style="display:flex;height:100%;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.82rem;">Log your morning weight below to plot your trend line.</div>`;
         return;
       }
-
       // Compute EMA Trend Weight (alpha = 0.25)
       let ema = Number(weights[0].weight);
       const pts = weights.map(w => {
@@ -1472,33 +1332,27 @@
         ema = +(0.25 * raw + 0.75 * ema).toFixed(1);
         return { date: w.date, raw, trend: ema, source: w.source };
       });
-
       const latest = pts[pts.length - 1];
       document.getElementById("statTrendWeight").textContent = `${latest.trend.toFixed(1)} lb`;
       document.getElementById("statLatestWeight").textContent = `${latest.raw.toFixed(1)} lb`;
       const diffGoal = (latest.trend - goal).toFixed(1);
       document.getElementById("statToGoal").textContent = diffGoal > 0 ? `-${diffGoal} lb` : "GOAL HIT!";
-
       // SVG Plot
       const recent = pts.slice(-14);
       const vals = recent.flatMap(p => [p.raw, p.trend]).concat([goal]);
       const minW = Math.floor(Math.min(...vals) - 1);
       const maxW = Math.ceil(Math.max(...vals) + 1);
       const W = 560, H = 160, padL = 36, padR = 14, padT = 14, padB = 24;
-
       const xFor = i => recent.length === 1 ? (W / 2) : padL + (i / (recent.length - 1)) * (W - padL - padR);
       const yFor = v => padT + ((maxW - v) / Math.max(1, maxW - minW)) * (H - padT - padB);
-
       const trendPoints = recent.map((p, i) => `${xFor(i).toFixed(1)},${yFor(p.trend).toFixed(1)}`).join(" ");
       const goalY = yFor(goal).toFixed(1);
-
       let circlesHtml = "";
       recent.forEach((p, i) => {
         const cx = xFor(i).toFixed(1);
         const cy = yFor(p.raw).toFixed(1);
         circlesHtml += `<circle cx="${cx}" cy="${cy}" r="3.5" fill="#9ca3af" opacity="0.65" />`;
       });
-
       box.innerHTML = `
         <svg viewBox="0 0 ${W} ${H}" width="100%" height="100%">
           <line x1="${padL}" y1="${goalY}" x2="${W - padR}" y2="${goalY}" stroke="rgba(182,255,51,0.3)" stroke-dasharray="4 4" stroke-width="1" />
@@ -1508,7 +1362,6 @@
           ${circlesHtml}
           <polyline fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="${trendPoints}" />
         </svg>`;
-
       const histEl = document.getElementById("weightHistoryList");
       histEl.innerHTML = "";
       pts.slice().reverse().forEach(p => {
@@ -1520,7 +1373,6 @@
         histEl.appendChild(row);
       });
     }
-
     function logMorningWeight() {
       const inp = document.getElementById("weightInput");
       const val = parseFloat(inp.value);
@@ -1532,7 +1384,6 @@
       persistData("Log morning weight");
       renderAll();
     }
-
     function saveVisualTargets() {
       CONFIG.profile = CONFIG.profile || {};
       CONFIG.profile.calorieTarget = {
@@ -1547,7 +1398,6 @@
       renderAll();
       switchTab("today");
     }
-
     function addNewMealCard() {
       const name = document.getElementById("newMealName").value.trim();
       if (!name) return;
@@ -1570,7 +1420,6 @@
       renderAll();
       switchTab("kitchen");
     }
-
     function importCronometerCsv(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -1580,7 +1429,6 @@
         const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
         if (lines.length < 2) return;
         const headers = lines[0].split(",").map(h => h.replace(/^"|"$/g, "").trim());
-
         if (headers.includes("Food Name")) {
           DATA.cronometer = DATA.cronometer || { dailySummaries: [], servingsByDate: {} };
           DATA.cronometer.servingsByDate = DATA.cronometer.servingsByDate || {};
@@ -1646,7 +1494,6 @@
       };
       reader.readAsText(file);
     }
-
     async function promptChangePassword() {
       if (!GH_AUTH) return;
       const newUser = prompt("Enter your desired Username:", "gabzsi");
